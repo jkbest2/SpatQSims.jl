@@ -1,0 +1,13 @@
+name = "SpatQSims"
+uuid = "baf29d45-b477-4558-8186-4051bce8e0df"
+authors = ["John K Best"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
