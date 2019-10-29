@@ -10,7 +10,7 @@ function catch_by_year(Cvec::Vector{<:Catch})
     year_catches, year_zeros, year_effort
 end
 
-function plot_gif(Pvec::Vector{<:PopState}, Cvec::Vector{<:Catch})
+function plot_gif(Pvec::Vector{<:PopState}, Cvec::Vector{<:Catch}, file)
     year_catches, _ = catch_by_year(Cvec)
     maxP = maximum(maximum.(getfield.(Pvec, :P)))
     minP = minimum(minimum.(getfield.(Pvec, :P)))
@@ -24,7 +24,7 @@ function plot_gif(Pvec::Vector{<:PopState}, Cvec::Vector{<:Catch})
                   ylim = (0.0, 1.05maximum(year_catches))))
         frame(anim)
     end
-    gif(anim, fps = 5)
+    gif(anim, file, fps = 5)
 end
 
 function plot(Pvec::Vector{<:PopState}, Cvec::Vector{<:Catch})

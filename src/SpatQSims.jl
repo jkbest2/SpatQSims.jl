@@ -5,10 +5,12 @@ using Distributions
 using Plots
 using Random
 using HDF5
+using CSV
 
 import Plots: plot
 
 include("realizations.jl")
+include("prep_sims.jl")
 include("scale_devs.jl")
 include("plots.jl")
 
@@ -16,6 +18,8 @@ export
     prep_sims,
     get_realization,
     run_simulation,
+    run_scenarios,
+    save_scenarios,
     generate_realizations,
     save_realizations,
     load_realization,
@@ -24,85 +28,15 @@ export
     scale_devs,
     catch_by_year,
     plot_gif,
-    plot
-
-function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
-    # Set seed for reproducibility. Passing RNGs directly doesn't work yet.
-    Random.seed!(2020)
-
-    # Use 100×100 gridded fishery domain for all simulations
-    Ω = GriddedFisheryDomain()
-
-    #-Habitat-------------------------------------------------------------------
-    # Declare habitat distribution
-    habitat_kernel = Matérn32Cov(4.0, 30.0)
-    hab_mean_fn(loc) = cospi(loc[1] / 50.0) + cospi(loc[2] / 50.0)
-    habitat_mean = 2hab_mean_fn.(Ω.locs)
-    habitat_cov = cov(habitat_kernel, Ω)
-    habitat_distribution = DomainDistribution(MvNormal(vec(habitat_mean),
-                                                       habitat_cov), Ω)
-
-    #-Movement------------------------------------------------------------------
-    # Declare habitat preference function and plot realized preference
-    hab_pref_fn(h) = exp(-(h + 5)^2 / 40)
-    # Distance travelled in a single step decays exponentially
-    distance_fn(d) = exp(-d / 1)
-
-    #-Vessels-------------------------------------------------------------------
-    # Catchability deviations - spatially correlated multiplicative noise
-    catchability_devs_kern = Matérn32Cov(0.05, 30.0)
-    catchability_devs_cov = cov(catchability_devs_kern, Ω)
-    catchability_devs_distr = DomainDistribution(MvLogNormal,
-                                                 ones(length(Ω)),
-                                                 catchability_devs_cov, Ω)
-
-    h5open(prep_fn, "w") do fid
-        hab_dset = d_create(fid, "habitat", datatype(Float64),
-                            dataspace(size(Ω)..., n),
-                            "chunk", (size(Ω)..., 1))
-        mov_dset = d_create(fid, "movement", datatype(Float64),
-                            dataspace(length(Ω), length(Ω), n),
-                            "chunk", (size(Ω)..., 1))
-        speq_dset = d_create(fid, "spatial_eq", datatype(Float64),
-                             dataspace(size(Ω)..., n),
-                             "chunk", (size(Ω)..., 1))
-        qdev_dset = d_create(fid, "catchability_devs", datatype(Float64),
-                             dataspace(size(Ω)..., n),
-                             "chunk", (size(Ω)..., 1))
-
-        hab = zeros(size(Ω)...)
-        mov = zeros(length(Ω), length(Ω))
-        speq = zeros(size(Ω)...)
-        qdev = zeros(size(Ω)...)
-
-        for rlz in 1:n
-            # Generate habitats and save
-            hab .= rand(habitat_distribution)
-            hab_dset[:, :, rlz] = hab
-
-            # Derive movement operator and save
-            mov .= MovementModel(Ω, hab, hab_pref_fn, distance_fn).M
-            mov_dset[:, :, rlz] = mov
-
-            # Find spatial equilibium distribution and save
-            speq .= approx_eqdist(MovementModel(mov, size(Ω)), K).P
-            speq_dset[:, :, rlz] = speq
-
-            # Generate spatially correlated catchability deviations
-            qdev .= rand(catchability_devs_distr)
-            qdev_dset[:, :, rlz] = qdev
-        end
-    end
-
-    # Return nothing; everything else accessed via saved HDF5 files
-    nothing
-end
+    plot,
+    get_coordref,
+    write_coordref
 
 function get_realization(n::Integer, prep_fn = "prep.h5")
     habitat = load_realization(prep_fn, "habitat", n)
     movement = load_movement(prep_fn, "movement", n)
     init_pop = load_popstate(prep_fn, "spatial_eq", n)
-    comm_catchability = load_realization(pref_fn, "catchability_deviations", n)
+    comm_catchability = load_realization(prep_fn, "catchability_devs", n)
 
     habitat, movement, init_pop, comm_catchability
 end
@@ -137,20 +71,21 @@ function run_simulation(q_scenario::Symbol,
     comm_q_base = 0.2
     if q_scenario == :naive
         # No spatially varying catchability in either fleet
-        survey_catchability = survey_q_base
-        comm_catchability = comm_q_base
+        survey_catchability = Catchability(survey_q_base)
+        comm_catchability = Catchability(comm_q_base)
     elseif q_scenario == :simple
         # Only commercial vessels have spatial catchability
-        survey_catchability = survey_q_base
-        comm_catchability = comm_q_base .* catchability_devs
+        survey_catchability = Catchability(survey_q_base)
+        comm_catchability = Catchability(comm_q_base .* catchability_devs)
     elseif q_scenario == :scaled
         # Both, but scaled down for survey
-        survey_catchability = survey_q_base .* scale_devs.(catchability_devs)
-        comm_catchability = comm_q_base .* catchability_devs
+        survey_catchability = Catchability(survey_q_base .*
+                                           scale_devs.(catchability_devs))
+        comm_catchability = Catchability(comm_q_base .* catchability_devs)
     elseif q_scenario == :shared
         # Shared
-        survey_catchability = survey_q_base .* catchability_devs
-        comm_catchability = comm_q_base .* catchability_devs
+        survey_catchability = Catchability(survey_q_base .* catchability_devs)
+        comm_catchability = Catchability(comm_q_base .* catchability_devs)
     else
         @error "q_scenario must be one of :naive, :simple, :scaled, or :shared."
     end
@@ -176,14 +111,57 @@ function run_simulation(q_scenario::Symbol,
     simulate(init_pop, fleet, movement, schaefer, Ω, 25)
 end
 
-function get_coord_reference(Ω)
-    coord_reference = [(idx = i, s1 = s1, s2 = s2) for
-                       (i, (s1, s2)) in enumerate(vec(Ω.locs))]
+function run_scenarios(repl::Integer, flnm = "prep.h5")
+    Pdict = Dict{Symbol, Vector{PopState}}()
+    Cdict = Dict{Symbol, Vector{Catch}}()
+    for sc in [:naive, :simple, :scaled, :shared]
+        P, C = run_simulation(sc, repl, flnm)
+        push!(Pdict, sc => P)
+        push!(Cdict, sc => C)
+    end
+    Pdict, Cdict
 end
 
-function write_coord_reference()
-    coord_reference = get_coord_reference()
-    CSV.write("coord_reference.csv", coord_reference)
+function save_scenarios(repl::Integer, Pdict, Cdict)
+    mkpath("repl_" * string(repl, pad = 2))
+    cd("repl_" * string(repl, pad = 2)) do
+        # Save population states to HDF5 file
+        flnm = "pop_" * string(repl, pad = 2) * ".h5"
+        dom_size = size(Pdict[:naive][1])
+        time_size = length(Pdict[:naive])
+        h5open(flnm, "w") do fid
+            for sc in keys(Pdict)
+                sc_grp = g_create(fid, string(sc))
+                sc_pop = d_create(sc_grp, "popstate", datatype(Float64),
+                                  dataspace(dom_size..., time_size))
+            end
+        end
+
+        for sc in keys(Pdict)
+            popstate = (pop = sum.(Pdict[sc]),)
+            CSV.write("popstate_" * string(repl, pad = 2) *
+                      "_" * string(sc) * ".csv",
+                      popstate)
+        end
+
+        # Save catch records to CSV file
+        for sc in keys(Cdict)
+            flnm = "catch_" * string(repl, pad = 2) *
+                  "_" * string(sc) * ".csv"
+            CSV.write(flnm, Cdict[sc])
+        end
+    end
+    nothing
+end
+
+function get_coordref(Ω)
+    [(loc_idx = i, s1 = s1, s2 = s2)
+        for (i, (s1, s2)) in enumerate(vec(Ω.locs))]
+end
+
+function write_coordref(Ω)
+    coordref = get_coordref(Ω)
+    CSV.write("coordref.csv", coordref)
 end
 
 end # module
