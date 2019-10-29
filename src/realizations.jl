@@ -54,14 +54,7 @@ Load the `n`th realization of the dataset `name` in the HDF5 file `fn`.
 function load_realization(fn::AbstractString,
                           name::AbstractString,
                           n::Integer)
-    fid = h5open(fn, "r")
-    try
-        return dropdims(fid[name][:, :, n]; dims = 3)
-    catch
-        @error "Could not read realization" n
-    finally
-        close(fid)
-    end
+    dropdims(h5open(fn, "r")[name][:, :, n]; dims = 3)
 end
 
 """
@@ -77,7 +70,8 @@ function save_realizations(fn::AbstractString, name::AbstractString,
 end
 
 function load_movement(fn::AbstractString, name::AbstractString, n::Integer)
-    MovementModel(load_realization(fn, name, n))
+    M = load_realization(fn, name, n)
+    MovementModel(M, isqrt.(size(M)))
 end
 
 function save_realizations(fn::AbstractString, name::AbstractString,
