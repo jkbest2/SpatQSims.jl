@@ -63,7 +63,7 @@ function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
             mov_dset[:, :, rlz] = mov
 
             # Find spatial equilibium distribution and save
-            speq .= approx_eqdist(MovementModel(mov, size(Ω)), K).P
+            speq .= eqdist(MovementModel(mov, size(Ω)), K).P
             speq_dset[:, :, rlz] = speq
 
             # Generate spatially correlated catchability deviations

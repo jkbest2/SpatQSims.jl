@@ -52,7 +52,7 @@ function run_simulation(q_scenario::Symbol,
     Ω = GriddedFisheryDomain()
 
     #-Population dynamics-------------------------------------------------------
-    r = 0.2
+    r = 0.075
     K = 100.0
 
     # K defined above to get spatial equilibrium
@@ -61,7 +61,7 @@ function run_simulation(q_scenario::Symbol,
     #-Targeting-----------------------------------------------------------------
     # Commercial targeting depends on population, so isn't constructed prior to
     # simulation.
-    survey_stations = vec(LinearIndices(Ω.n)[2:2:98, 5:10:95])
+    survey_stations = vec(LinearIndices(Ω.n)[2:4:98, 5:10:95])
     survey_targeting = FixedTargeting(survey_stations)
     # Commercial preference is based on spatial distribution of biomass
     comm_targeting = DynamicPreferentialTargeting(init_pop.P, identity)
@@ -105,7 +105,7 @@ function run_simulation(q_scenario::Symbol,
     #-Fleet---------------------------------------------------------------------
     fleet = Fleet([survey_vessel, comm_vessel],
                   [length(survey_vessel.target.locations),
-                   10_000])
+                   1_000])
 
     #-Simulate------------------------------------------------------------------
     simulate(init_pop, fleet, movement, schaefer, Ω, 25)
