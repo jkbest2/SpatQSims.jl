@@ -161,7 +161,9 @@ version = "0.8.2"
 
 [[FisherySim]]
 deps = ["Arpack", "Distributions", "LinearAlgebra", "PDMats", "Random", "StatsBase", "Test", "TweedieDistributions"]
-path = "/home/jkbest/.julia/dev/FisherySim"
+git-tree-sha1 = "2e3747a4fa803f5c9b04202a85464e681023583e"
+repo-rev = "master"
+repo-url = "https://github.com/jkbest2/FisherySim.jl.git"
 uuid = "c2a90378-fa76-5799-9c4c-bbfd1330d11a"
 version = "0.2.0"
 
