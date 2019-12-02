@@ -20,7 +20,7 @@ function plot_gif(Pvec::Vector{<:PopState}, Cvec::Vector{<:Catch}, file)
                      color = :viridis, clims = (minP, maxP),
                      aspect_ratio = 1),
              plot(year_catches[1:yr],
-                  xlim = (0.5, length(Cvec) + 0.5),
+                  xlim = (0.5, length(year_catches) + 0.5),
                   ylim = (0.0, 1.05maximum(year_catches))))
         frame(anim)
     end
