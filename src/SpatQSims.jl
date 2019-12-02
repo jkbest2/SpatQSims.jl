@@ -65,7 +65,7 @@ function run_simulation(q_scenario::Symbol,
     survey_targeting = FixedTargeting(survey_stations)
     # Commercial preference is based on spatial distribution of biomass
     comm_targeting = DynamicPreferentialTargeting(init_pop.P, identity)
-    
+
     #-Catchability--------------------------------------------------------------
     survey_q_base = 0.2
     comm_q_base = 0.2
@@ -134,6 +134,9 @@ function save_scenarios(repl::Integer, Pdict, Cdict)
                 sc_grp = g_create(fid, string(sc))
                 sc_pop = d_create(sc_grp, "popstate", datatype(Float64),
                                   dataspace(dom_size..., time_size))
+                for yr in eachindex(Pdict[sc])
+                    sc_pop[:, :, yr] = Pdict[sc][yr].P
+                end
             end
         end
 
