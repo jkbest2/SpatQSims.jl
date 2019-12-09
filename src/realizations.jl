@@ -80,8 +80,12 @@ function save_realizations(fn::AbstractString, name::AbstractString,
     save_realizations(fn, name, pops)
 end
 
+function load_spatial_eq(fn::AbstractString, name::AbstractString, n::Integer)
+    PopState(load_realization(fn, "spatial_eq", n))
+end
+
 function load_popstate(fn::AbstractString, name::AbstractString, n::Integer)
-    PopState(load_realization(fn, name, n))
+    PopState(load_realization(fn, name * "/popstate", n))
 end
 
 function save_realizations(fn::AbstractString, name::AbstractString,

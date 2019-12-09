@@ -24,6 +24,7 @@ export
     save_realizations,
     load_realization,
     load_movement,
+    load_spatial_eq,
     load_popstate,
     scale_devs,
     catch_by_year,
@@ -35,13 +36,13 @@ export
 function get_realization(n::Integer, prep_fn = "prep.h5")
     habitat = load_realization(prep_fn, "habitat", n)
     movement = load_movement(prep_fn, "movement", n)
-    init_pop = load_popstate(prep_fn, "spatial_eq", n)
+    init_pop = load_spatial_eq(prep_fn, "spatial_eq", n)
     comm_catchability = load_realization(prep_fn, "catchability_devs", n)
 
     habitat, movement, init_pop, comm_catchability
 end
 
-function run_simulation(q_scenario::Symbol,
+function run_simulation(scenario::Symbol,
                         realization::Integer,
                         prep_fn = "prep.h5")
     # Don't need habitat for simulation
@@ -52,7 +53,7 @@ function run_simulation(q_scenario::Symbol,
     Ω = GriddedFisheryDomain()
 
     #-Population dynamics-------------------------------------------------------
-    r = 0.075
+    r = 0.06
     K = 100.0
 
     # K defined above to get spatial equilibrium
@@ -69,25 +70,21 @@ function run_simulation(q_scenario::Symbol,
     #-Catchability--------------------------------------------------------------
     survey_q_base = 0.2
     comm_q_base = 0.2
-    if q_scenario == :naive
+    if scenario == :pref
         # No spatially varying catchability in either fleet
         survey_catchability = Catchability(survey_q_base)
         comm_catchability = Catchability(comm_q_base)
-    elseif q_scenario == :simple
-        # Only commercial vessels have spatial catchability
+    elseif scenario == :spat
+        # Both, but scaled down for survey
         survey_catchability = Catchability(survey_q_base)
         comm_catchability = Catchability(comm_q_base .* catchability_devs)
-    elseif q_scenario == :scaled
-        # Both, but scaled down for survey
-        survey_catchability = Catchability(survey_q_base .*
-                                           scale_devs.(catchability_devs))
-        comm_catchability = Catchability(comm_q_base .* catchability_devs)
-    elseif q_scenario == :shared
+        comm_targeting = RandomTargeting()
+    elseif scenario == :combo
         # Shared
-        survey_catchability = Catchability(survey_q_base .* catchability_devs)
+        survey_catchability = Catchability(survey_q_base)
         comm_catchability = Catchability(comm_q_base .* catchability_devs)
     else
-        @error "q_scenario must be one of :naive, :simple, :scaled, or :shared."
+        @error "scenario must be one of :pref, :spat, or :combo."
     end
 
     #-Vessels-------------------------------------------------------------------
@@ -105,7 +102,7 @@ function run_simulation(q_scenario::Symbol,
     #-Fleet---------------------------------------------------------------------
     fleet = Fleet([survey_vessel, comm_vessel],
                   [length(survey_vessel.target.locations),
-                   1_000])
+                   2_500])
 
     #-Simulate------------------------------------------------------------------
     simulate(init_pop, fleet, movement, schaefer, Ω, 25)
