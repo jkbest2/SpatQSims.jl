@@ -13,18 +13,24 @@ function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
 
     #-Habitat-------------------------------------------------------------------
     # Declare habitat distribution
-    habitat_kernel = Matérn32Cov(4.0, 30.0)
-    hab_mean_fn(loc) = cospi(loc[1] / 50.0) + cospi(loc[2] / 50.0)
-    habitat_mean = 2hab_mean_fn.(Ω.locs)
+    habitat_kernel = Matérn32Cov(9.0, 20.0)
+    function hab_mean_fn(loc)
+        hab_mean = ((-loc[1] + 50)^2 + (-loc[2] + 50)^2) / 500 - 5//2
+        if hab_mean > 5
+            hab_mean = 5one(hab_mean)
+        end
+        hab_mean
+    end
+    habitat_mean = hab_mean_fn.(Ω.locs)
     habitat_cov = cov(habitat_kernel, Ω)
     habitat_distribution = DomainDistribution(MvNormal(vec(habitat_mean),
                                                        habitat_cov), Ω)
 
     #-Movement------------------------------------------------------------------
     # Declare habitat preference function and plot realized preference
-    hab_pref_fn(h) = exp(-(h + 5)^2 / 40)
+    hab_pref_fn(h) = exp(-(h + 5)^2 / 25)
     # Distance travelled in a single step decays exponentially
-    distance_fn(d) = exp(-d / 1)
+    distance_fn(d) = exp(-d / 5)
 
     #-Vessels-------------------------------------------------------------------
     # Catchability deviations - spatially correlated multiplicative noise
@@ -75,4 +81,3 @@ function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
     # Return nothing; everything else accessed via saved HDF5 files
     nothing
 end
-
