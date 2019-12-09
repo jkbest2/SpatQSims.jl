@@ -81,7 +81,7 @@ function save_realizations(fn::AbstractString, name::AbstractString,
 end
 
 function load_popstate(fn::AbstractString, name::AbstractString, n::Integer)
-    PopState(load_realization(fn, name, n))
+    PopState(load_realization(fn, name * "/popstate", n))
 end
 
 function save_realizations(fn::AbstractString, name::AbstractString,
