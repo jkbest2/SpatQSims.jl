@@ -71,16 +71,13 @@ function run_simulation(scenario::Symbol,
     survey_q_base = 0.2
     comm_q_base = 0.2
     if scenario == :pref
-        # No spatially varying catchability in either fleet
         survey_catchability = Catchability(survey_q_base)
         comm_catchability = Catchability(comm_q_base)
     elseif scenario == :spat
-        # Both, but scaled down for survey
         survey_catchability = Catchability(survey_q_base)
         comm_catchability = Catchability(comm_q_base .* catchability_devs)
         comm_targeting = RandomTargeting()
     elseif scenario == :combo
-        # Shared
         survey_catchability = Catchability(survey_q_base)
         comm_catchability = Catchability(comm_q_base .* catchability_devs)
     else
@@ -111,7 +108,7 @@ end
 function run_scenarios(repl::Integer, flnm = "prep.h5")
     Pdict = Dict{Symbol, Vector{PopState}}()
     Cdict = Dict{Symbol, Vector{Catch}}()
-    for sc in [:naive, :simple, :scaled, :shared]
+    for sc in [:pref, :spat, :combo]
         P, C = run_simulation(sc, repl, flnm)
         push!(Pdict, sc => P)
         push!(Cdict, sc => C)
@@ -124,8 +121,8 @@ function save_scenarios(repl::Integer, Pdict, Cdict)
     cd("repl_" * string(repl, pad = 2)) do
         # Save population states to HDF5 file
         flnm = "pop_" * string(repl, pad = 2) * ".h5"
-        dom_size = size(Pdict[:naive][1])
-        time_size = length(Pdict[:naive])
+        dom_size = size(Pdict[:pref][1])
+        time_size = length(Pdict[:pref])
         h5open(flnm, "w") do fid
             for sc in keys(Pdict)
                 sc_grp = g_create(fid, string(sc))
