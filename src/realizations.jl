@@ -54,7 +54,7 @@ Load the `n`th realization of the dataset `name` in the HDF5 file `fn`.
 function load_realization(fn::AbstractString,
                           name::AbstractString,
                           n::Integer)
-    dropdims(h5open(fn, "r")[name][:, :, n]; dims = 3)
+    h5open(fn, "r")[name][:, :, n]
 end
 
 """
