@@ -6,6 +6,7 @@ using Plots
 using Random
 using HDF5
 using CSV
+using StructArrays
 
 import Plots: plot
 
@@ -138,14 +139,14 @@ function save_scenarios(repl::Integer, Pdict, Cdict)
             popstate = (pop = sum.(Pdict[sc]),)
             CSV.write("popstate_" * string(repl, pad = 2) *
                       "_" * string(sc) * ".csv",
-                      popstate)
+                      StructArray(popstate))
         end
 
         # Save catch records to CSV file
         for sc in keys(Cdict)
             flnm = "catch_" * string(repl, pad = 2) *
                   "_" * string(sc) * ".csv"
-            CSV.write(flnm, Cdict[sc])
+            CSV.write(flnm, StructArray(Cdict[sc]))
         end
     end
     nothing
