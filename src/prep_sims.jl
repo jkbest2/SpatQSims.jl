@@ -40,6 +40,15 @@ function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
                                                  ones(length(Ω)),
                                                  catchability_devs_cov, Ω)
 
+    # Log-catchability deviations - rescalable option so that spatial structure
+    # of catchability deviations is constant, but has different magnitudes.
+    log_catchability_devs_kern = Matérn32Cov(1.0, 30.0)
+    log_catchability_devs_cov = cov(log_catchability_devs_kern, Ω)
+    log_catchability_devs_distr = DomainDistribution(
+        MvNormal(zeros(length(Ω)),
+                 log_catchability_devs_cov),
+        Ω)
+
     h5open(prep_fn, "w") do fid
         hab_dset = d_create(fid, "habitat", datatype(Float64),
                             dataspace(size(Ω)..., n),
@@ -53,11 +62,15 @@ function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
         qdev_dset = d_create(fid, "catchability_devs", datatype(Float64),
                              dataspace(size(Ω)..., n),
                              "chunk", (size(Ω)..., 1))
+        log_qdev_dset = d_create(fid, "log_catchability_devs", datatype(Float64),
+                                 dataspace(size(Ω)..., n),
+                                 "chunk", (size(Ω)..., 1))
 
         hab = zeros(size(Ω)...)
         mov = zeros(length(Ω), length(Ω))
         speq = zeros(size(Ω)...)
         qdev = zeros(size(Ω)...)
+        log_qdev = zeros(size(Ω)...)
 
         for rlz in 1:n
             # Generate habitats and save
@@ -75,6 +88,11 @@ function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
             # Generate spatially correlated catchability deviations
             qdev .= rand(catchability_devs_distr)
             qdev_dset[:, :, rlz] = qdev
+
+            # Generate *log*-catchability deviations that can be rescaled
+            # depending on the exact OM specification
+            log_qdev .= rand(log_catchability_devs_distr)
+            log_qdev_dset[:, :, rlz] = log_qdev
         end
     end
 
