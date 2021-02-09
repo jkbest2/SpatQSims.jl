@@ -30,9 +30,9 @@ function save_realizations(fn::AbstractString,
     try
         _dims = size(realizations[1])
         _n = length(realizations)
-        dset = d_create(fid, name, datatype(Float64),
-                        dataspace(_dims..., _n),
-                        "chunk", (_dims..., 1))
+        dset = create_dataset(fid, name, datatype(Float64),
+                              dataspace(_dims..., _n),
+                              chunk = (_dims..., 1))
         for (idx, rlzn) in enumerate(realizations)
             dset[:, :, idx] = rlzn
         end

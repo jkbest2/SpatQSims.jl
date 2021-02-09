@@ -50,21 +50,31 @@ function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
         Ω)
 
     h5open(prep_fn, "w") do fid
-        hab_dset = d_create(fid, "habitat", datatype(Float64),
-                            dataspace(size(Ω)..., n),
-                            "chunk", (size(Ω)..., 1))
-        mov_dset = d_create(fid, "movement", datatype(Float64),
-                            dataspace(length(Ω), length(Ω), n),
-                            "chunk", (size(Ω)..., 1))
-        speq_dset = d_create(fid, "spatial_eq", datatype(Float64),
-                             dataspace(size(Ω)..., n),
-                             "chunk", (size(Ω)..., 1))
-        qdev_dset = d_create(fid, "catchability_devs", datatype(Float64),
-                             dataspace(size(Ω)..., n),
-                             "chunk", (size(Ω)..., 1))
-        log_qdev_dset = d_create(fid, "log_catchability_devs", datatype(Float64),
-                                 dataspace(size(Ω)..., n),
-                                 "chunk", (size(Ω)..., 1))
+        hab_dset = create_dataset(fid,
+                                  "habitat",
+                                  datatype(Float64),
+                                  dataspace(size(Ω)..., n),
+                                  chunk = (size(Ω)..., 1))
+        mov_dset = create_dataset(fid,
+                                  "movement",
+                                  datatype(Float64),
+                                  dataspace(length(Ω), length(Ω), n),
+                                  chunk = (size(Ω)..., 1))
+        speq_dset = create_dataset(fid,
+                                   "spatial_eq",
+                                   datatype(Float64),
+                                   dataspace(size(Ω)..., n),
+                                   chunk = (size(Ω)..., 1))
+        qdev_dset = create_dataset(fid,
+                                   "catchability_devs",
+                                   datatype(Float64),
+                                   dataspace(size(Ω)..., n),
+                                   chunk = (size(Ω)..., 1))
+        log_qdev_dset = create_dataset(fid,
+                                       "log_catchability_devs",
+                                       datatype(Float64),
+                                       dataspace(size(Ω)..., n),
+                                       chunk = (size(Ω)..., 1))
 
         hab = zeros(size(Ω)...)
         mov = zeros(length(Ω), length(Ω))
