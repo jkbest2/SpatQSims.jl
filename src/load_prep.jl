@@ -3,9 +3,9 @@ function get_realization(n::Integer, prep_fn = "prep.h5")
     movement = load_movement(prep_fn, "movement", n)
     init_pop = load_spatial_eq(prep_fn, "spatial_eq", n)
     comm_catchability = load_realization(prep_fn, "catchability_devs", n)
-    log_catchability_devs = load_realization(prep_fn, "log_catchability_devs", n)
+    log_qdevs = load_realization(prep_fn, "log_catchability_devs", n)
 
-    habitat, movement, init_pop, comm_catchability, log_catchability_devs
+    habitat, movement, init_pop, comm_catchability, log_qdevs
 end
 
 struct SpatQSimPrep{M, P, Q}

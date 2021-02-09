@@ -12,7 +12,7 @@ struct SpatQSimPrep{M, P, Q}
         init_pop = PopState(init_pop)
         M = typeof(movement)
         P = typeof(init_pop)
-        Q = typeof(log_catchability_devs)
+        Q = typeof(log_qdevs)
         new{M, P, Q}(movement,
                      init_pop,
                      log_qdevs,
