@@ -14,39 +14,6 @@ struct SpatQSimResult{P,C,S}
 end
 
 realization(result::SpatQSimResult) = realization(result.spec)
-function simstudy_dir(spec::QDevScalingSpec; base_dir = ".")
-    joinpath(base_dir, "qdevscaling")
-end
-
-
-"""
-    file_paths(spec::QDevScalingSpec)
-
-Returns paths for population state HDF5 array, population total CSV, and catch
-CSV. Will create directories as needed. For example, for the 5th realization
-using the second catchability deviation scaling factor, this function will
-return:
-
-    repl_05/qdevscale_2_popstate.h5
-    repl_05/qdevscale_2_popstate.csv
-    repl_05/qdevscale_2_catch.csv
-"""
-function file_paths(spec::QDevScalingSpec; base_dir = ".")
-    rlz = realization(spec)
-
-    base_dir = joinpath(simstudy_dir(spec; base_dir = base_dir),
-                         "repl_" * string(rlz, pad = 2))
-    if !isdir(base_dir)
-        mkpath(base_dir)
-    end
-
-    file_base = joinpath(base_dir,
-                         "qdevscale_" * string(qdev_scale_idx(spec), pad = 2))
-    file_base .* ["_popstate.h5",
-                  "_popstate.csv",
-                  "_catch.csv"]
-end
-
 function save(result::SpatQSimResult)
     files = file_paths(result.spec)
     save_pop_hdf5(result, files[1])
