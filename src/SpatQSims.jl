@@ -69,6 +69,16 @@ export
     qdev_scale_idx,
     run_qdevscaling_sim
 
+include("sharedq.jl")
+export
+    SharedQSpec,
+    share_scales,
+    share_scale_idx,
+    survey_qdev_scale,
+    simstudy_dir,
+    file_paths,
+    run_sharedq_sim
+
 include("simsetup.jl")
 export
     SpatQSimSetup,

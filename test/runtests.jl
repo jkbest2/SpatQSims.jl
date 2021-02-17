@@ -2,6 +2,12 @@ using SpatQSims
 using Test
 
 @testset "SpatQSims.jl" begin
-    include("qdevscaling_test.jl")
-    # Write your own tests here.
+    base_dir = mktempdir()
+    cd(base_dir) do
+        prep_sims(1, "prep.h5")
+        @test "prep.h5" in readdir()
+
+        include("qdevscaling_test.jl")
+        include("sharedq_test.jl")
+    end
 end
