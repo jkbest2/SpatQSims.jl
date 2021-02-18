@@ -79,6 +79,15 @@ export
     file_paths,
     run_sharedq_sim
 
+include("prefintensity.jl")
+export
+    PrefIntensitySpec,
+    pref_powers,
+    pref_power_idx,
+    # simstudy_dir,
+    # file_paths,
+    run_prefintensity_sim
+
 include("simsetup.jl")
 export
     SpatQSimSetup,

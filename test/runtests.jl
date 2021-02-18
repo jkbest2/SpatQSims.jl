@@ -9,5 +9,6 @@ using Test
 
         include("qdevscaling_test.jl")
         include("sharedq_test.jl")
+        include("prefintensity_test.jl")
     end
 end
