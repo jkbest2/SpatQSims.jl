@@ -64,34 +64,40 @@ export
 include("qdevscaling.jl")
 export
     QDevScalingSpec,
-    qdev_scales,
-    comm_qdev_scale,
-    qdev_scale_idx,
-    run_qdevscaling_sim
+    sim_value,
+    comm_qdev_scale
 
 include("sharedq.jl")
 export
     SharedQSpec,
-    share_scales,
-    share_scale_idx,
-    survey_qdev_scale,
-    simstudy_dir,
-    file_paths,
-    run_sharedq_sim
+    sim_value,
+    survey_catchability
 
 include("prefintensity.jl")
 export
     PrefIntensitySpec,
-    pref_powers,
-    pref_power_idx,
-    # simstudy_dir,
-    # file_paths,
-    run_prefintensity_sim
+    sim_value,
+    comm_targeting
+
+include("sim_pars.jl")
+export
+    sim_values,
+    sim_value_idx
+
+include("files.jl")
+export
+    file_paths,
+    simstudy_dir,
+    simstudy_prefix
 
 include("simsetup.jl")
 export
     SpatQSimSetup,
     simulate
+
+include("run_sims.jl")
+export
+    run_sims
 
 include("simresult.jl")
 export
