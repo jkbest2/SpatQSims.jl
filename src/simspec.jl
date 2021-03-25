@@ -53,5 +53,6 @@ function fleet(spec::SpatQSimSpec, prep::SpatQSimPrep)
     n_survey_locs = length(survey.target.locations)
     comm = comm_vessel(spec, prep)
     Fleet([survey, comm],
-          [n_survey_locs, 2_500])
+          [n_survey_locs, 2_500],
+          [1, 2])               # survey fishes first
 end
