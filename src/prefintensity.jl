@@ -13,6 +13,7 @@ end
 sim_value(spec::PrefIntensitySpec) = spec.pref_power
 
 function comm_targeting(spec::PrefIntensitySpec, prep::SpatQSimPrep)
+    comm_q = comm_catchability(spec, prep)
     DynamicPreferentialTargeting(init_pop(prep).P,
-                                 p -> p .^ sim_value(spec))
+                                 p -> (comm_q.catchability .* p) .^ sim_value(spec))
 end

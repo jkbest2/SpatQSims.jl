@@ -15,7 +15,9 @@ function survey_targeting(spec::SpatQSimSpec,
     FixedTargeting(survey_stations)
 end
 function comm_targeting(spec::SpatQSimSpec, prep::SpatQSimPrep)
-    DynamicPreferentialTargeting(init_pop(prep).P, identity)
+    comm_q = comm_catchability(spec, prep)
+    DynamicPreferentialTargeting(init_pop(prep).P,
+                                 pop -> pop .* comm_q.catchability)
 end
 
 # Default catchabilities
