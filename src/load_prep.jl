@@ -32,8 +32,12 @@ struct SpatQSimPrep{M, P, Q}
     end
 end
 
+# In simspec.jl so everything happens in the right order
+# function SpatQSimPrep(spec::SpatQSimSpec)
+
 movement(prep::SpatQSimPrep) = prep.movement
 init_pop(prep::SpatQSimPrep) = prep.init_pop
 log_qdevs(prep::SpatQSimPrep) = prep.log_qdevs
 realization(prep::SpatQSimPrep) = prep.realization
 prep_file(prep::SpatQSimPrep) = prep.prep_file
+

@@ -27,9 +27,8 @@ struct SpatQSimSetup{P,F,M,R,D,S}
     end
 end
 
-function SpatQSimSetup(spec::SpatQSimSpec)
-    prep = SpatQSimPrep(realization(spec),
-                        prep_file(spec))
+function SpatQSimSetup(spec::SpatQSimSpec,
+                       prep::SpatQSimPrep)
     SpatQSimSetup(init_pop(prep),
                   fleet(spec, prep),
                   movement(prep),
@@ -37,6 +36,11 @@ function SpatQSimSetup(spec::SpatQSimSpec)
                   domain(spec),
                   n_years(spec),
                   spec)
+end
+
+function SpatQSimSetup(spec::SpatQSimSpec)
+    prep = SpatQSimPrep(spec)
+    SpatQSimSetup(spec, prep)
 end
 
 function simulate(setup::SpatQSimSetup)

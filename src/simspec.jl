@@ -56,3 +56,8 @@ function fleet(spec::SpatQSimSpec, prep::SpatQSimPrep)
           [n_survey_locs, 2_500],
           [1, 2])               # survey fishes first
 end
+
+function SpatQSimPrep(spec::SpatQSimSpec)
+    SpatQSimPrep(realization(spec),
+                 prep_file(spec))
+end
