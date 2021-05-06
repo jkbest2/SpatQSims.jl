@@ -6,12 +6,13 @@ prep_file(spec::SpatQSimSpec) = spec.prep_file
 
 # Common specifications
 domain(::SpatQSimSpec) = GriddedFisheryDomain()
-pop_dynamics(::SpatQSimSpec) = Schaefer(0.06, 100.0)
+pop_dynamics(::SpatQSimSpec) = Schaefer(0.0, 100.0)
 
 # Default vessel targeting behavior
 function survey_targeting(spec::SpatQSimSpec,
                           domain::AbstractFisheryDomain = domain(spec))
-    survey_stations = vec(LinearIndices(domain.n)[2:4:98, 5:10:95])
+    # survey_stations = vec(LinearIndices(domain.n)[2:4:98, 5:10:95])
+    survey_stations = vec(LinearIndices(domain.n)[3:5:98, 3:5:98])
     FixedTargeting(survey_stations)
 end
 function comm_targeting(spec::SpatQSimSpec, prep::SpatQSimPrep)
@@ -21,7 +22,7 @@ function comm_targeting(spec::SpatQSimSpec, prep::SpatQSimPrep)
 end
 
 # Default catchabilities
-base_catchability() = Catchability(0.2)
+base_catchability() = Catchability(0.01)
 survey_catchability(::SpatQSimSpec) = base_catchability()
 comm_qdev_scale(::SpatQSimSpec) = 0.05
 function comm_catchability(spec::SpatQSimSpec, prep::SpatQSimPrep)
@@ -34,7 +35,7 @@ tweedie_shape(::SpatQSimSpec) = 1.84
 tweedie_dispersion(::SpatQSimSpec) = 1.2
 
 # Number of years to simulate
-n_years(::SpatQSimSpec) = 25
+n_years(::SpatQSimSpec) = 20
 
 # Define functions to construct survey and commercial vessel types, then use
 # these to construct the Fleet
@@ -55,7 +56,7 @@ function fleet(spec::SpatQSimSpec, prep::SpatQSimPrep)
     n_survey_locs = length(survey.target.locations)
     comm = comm_vessel(spec, prep)
     Fleet([survey, comm],
-          [n_survey_locs, 2_500],
+          [n_survey_locs, 40_000],
           [1, 2])               # survey fishes first
 end
 
