@@ -9,6 +9,8 @@ with the strings:
     repl_05/prefintensity_02_popstate.h5
     repl_05/prefintensity_02_popstate.csv
     repl_05/prefintensity_02_catch.csv
+    repl_05/prefintensity_02_popstate.feather
+    repl_05/prefintensity_02_catch.feather
 """
 function file_paths(spec::SpatQSimSpec; base_dir = ".")
     rlz = realization(spec)
@@ -24,7 +26,9 @@ function file_paths(spec::SpatQSimSpec; base_dir = ".")
                          string(sim_value_idx(spec), pad = 2))
     file_base .* ["_popstate.h5",
                   "_popstate.csv",
-                  "_catch.csv"]
+                  "_catch.csv",
+                  "_popstate.feather",
+                  "_catch.feather"]
 end
 
 """

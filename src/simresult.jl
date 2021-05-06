@@ -14,11 +14,17 @@ struct SpatQSimResult{P,C,S}
 end
 
 realization(result::SpatQSimResult) = realization(result.spec)
-function save(result::SpatQSimResult)
+function save(result::SpatQSimResult; csv = false, feather = true)
     files = file_paths(result.spec)
     save_pop_hdf5(result, files[1])
-    save_pop_csv(result, files[2])
-    save_catch_csv(result, files[3])
+    if (csv)
+        save_pop_csv(result, files[2])
+        save_catch_csv(result, files[3])
+    end
+    if (feather)
+        save_pop_feather(result, files[4])
+        save_catch_feather(result, files[5])
+    end
     files
 end
 
@@ -43,5 +49,16 @@ end
 
 function save_catch_csv(result::SpatQSimResult, file_name::String)
     CSV.write(file_name, StructArray(result.catch_record))
+    file_name
+end
+
+function save_pop_feather(result::SpatQSimResult, file_name::String)
+    popstate = (pop = sum.(result.pop_state), )
+    Arrow.write(file_name, StructArray(popstate))
+    file_name
+end
+
+function save_catch_feather(result::SpatQSimResult, file_name::String)
+    Arrow.write(file_name, StructArray(result.catch_record))
     file_name
 end

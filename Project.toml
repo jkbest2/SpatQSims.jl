@@ -4,6 +4,7 @@ authors = ["John K Best"]
 version = "0.1.2"
 
 [deps]
+Arrow = "69666777-d1a9-59fb-9406-91d4454c9d45"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 FisherySim = "c2a90378-fa76-5799-9c4c-bbfd1330d11a"

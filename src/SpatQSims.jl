@@ -7,6 +7,7 @@ using Random
 using HDF5
 using CSV
 using StructArrays
+using Arrow
 
 import FisherySim: simulate
 import Plots: plot
