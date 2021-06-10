@@ -80,6 +80,12 @@ export
     sim_value,
     comm_targeting
 
+include("densdepq.jl")
+export
+    DensityDependentQSpec,
+    sim_value,
+    comm_catchability
+
 include("sim_pars.jl")
 export
     sim_values,

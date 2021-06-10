@@ -38,7 +38,7 @@ simstudy_dir(::T) where T<:SpatQSimSpec = simstudy_dir(T)
 simstudy_dir(::Type{<:QDevScalingSpec}) = "qdevscaling"
 simstudy_dir(::Type{<:SharedQSpec}) = "sharedq"
 simstudy_dir(::Type{<:PrefIntensitySpec}) = "prefintensity"
-# simstudy_dir(::Type{DensDepQSpec}) = "densdepq"
+simstudy_dir(::Type{<:DensityDependentQSpec}) = "densdepq"
 
 
 """
@@ -48,4 +48,4 @@ simstudy_prefix(::T) where T<:SpatQSimSpec = simstudy_prefix(T)
 simstudy_prefix(::Type{<:QDevScalingSpec}) = "qdevscale_"
 simstudy_prefix(::Type{<:SharedQSpec}) = "sharedq_"
 simstudy_prefix(::Type{<:PrefIntensitySpec}) = "prefintensity_"
-# simstudy_prefix(::Type{DensDepQSpec}) = "densdepq_"
+simstudy_prefix(::Type{<:DensityDependentQSpec}) = "densdepq_"
