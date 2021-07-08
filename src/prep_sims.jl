@@ -30,7 +30,8 @@ function prep_sims(n = 100, prep_fn = "prep.h5", K = 100.0)
     # Declare habitat preference function and plot realized preference
     hab_pref_fn(h) = exp(-(h + 5)^2 / 25)
     # Distance travelled in a single step decays exponentially
-    distance_fn(d) = exp(-d / 5)
+    # distance_fn(d) = exp(-d ^ 2 / 5)
+    distance_fn(d) = 1
 
     #-Vessels-------------------------------------------------------------------
     # Catchability deviations - spatially correlated multiplicative noise
