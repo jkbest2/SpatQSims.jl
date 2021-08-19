@@ -33,7 +33,7 @@ export
     scale_devs,
     transform_log_qdevs
 
-include("load_prep.jl")
+include("simprep.jl")
 export
     get_realization,
     SpatQSimPrep,
