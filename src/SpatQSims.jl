@@ -2,6 +2,7 @@ module SpatQSims
 
 using FisherySim
 using Distributions
+using NeutralLandscapes
 using Plots
 using Random
 using HDF5
@@ -9,7 +10,7 @@ using CSV
 using StructArrays
 using Arrow
 
-import FisherySim: simulate
+import FisherySim: simulate, domain
 import Plots: plot
 
 include("realizations.jl")
@@ -86,6 +87,30 @@ export
     sim_value,
     comm_catchability
 
+include("habq.jl")
+export
+    HabQSpec,
+    edge_hab,
+    general_hab_distr,
+    rocky_hab_distr,
+    generate_habitat,
+    general_hab_pref,
+    rocky_hab_pref_gen,
+    generate_habitat,
+    move_rate,
+    make_moveop,
+    sim_value,
+    survey_catchability,
+    comm_catchability,
+    prepare,
+    setup,
+    habitat,
+    domain,
+    movement,
+    init_pop,
+    prepare_habitat,
+    get_habitat
+
 include("sim_pars.jl")
 export
     sim_values,
@@ -95,7 +120,8 @@ include("files.jl")
 export
     file_paths,
     simstudy_dir,
-    simstudy_prefix
+    simstudy_prefix,
+    prep_path
 
 include("simsetup.jl")
 export

@@ -15,7 +15,8 @@ with the strings:
 function file_paths(spec::SpatQSimSpec; base_dir = ".")
     rlz = realization(spec)
 
-    base_dir = joinpath(simstudy_dir(spec),
+    base_dir = normpath(base_dir,
+                        simstudy_dir(spec),
                          "repl_" * string(rlz, pad = 2))
     if !isdir(base_dir)
         mkpath(base_dir)
@@ -28,7 +29,8 @@ function file_paths(spec::SpatQSimSpec; base_dir = ".")
                   "_popstate.csv",
                   "_catch.csv",
                   "_popstate.feather",
-                  "_catch.feather"]
+                  "_catch.feather",
+                  "_prep.h5"]
 end
 
 """
@@ -39,6 +41,7 @@ simstudy_dir(::Type{<:QDevScalingSpec}) = "qdevscaling"
 simstudy_dir(::Type{<:SharedQSpec}) = "sharedq"
 simstudy_dir(::Type{<:PrefIntensitySpec}) = "prefintensity"
 simstudy_dir(::Type{<:DensityDependentQSpec}) = "densdepq"
+simstudy_dir(::Type{<:HabQSpec}) = "habq"
 
 
 """
@@ -49,3 +52,15 @@ simstudy_prefix(::Type{<:QDevScalingSpec}) = "qdevscale_"
 simstudy_prefix(::Type{<:SharedQSpec}) = "sharedq_"
 simstudy_prefix(::Type{<:PrefIntensitySpec}) = "prefintensity_"
 simstudy_prefix(::Type{<:DensityDependentQSpec}) = "densdepq_"
+simstudy_prefix(::Type{<:HabQSpec}) = "habq_"
+
+function prep_path(simtype::Type{<:HabQSpec}, repl::Integer; base_dir = ".")
+    normpath(base_dir,
+             simstudy_dir(simtype),
+             "repl_" * string(repl, pad = 2),
+             simstudy_prefix(simtype) * "prep.h5")
+end
+
+function prep_path(spec::HabQSpec; base_dir = ".")
+    prep_path(typeof(spec), realization(spec); base_dir = base_dir)
+end

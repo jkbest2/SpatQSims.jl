@@ -11,5 +11,6 @@ using Test
         include("sharedq_test.jl")
         include("prefintensity_test.jl")
         include("densdepq_test.jl")
+        include("habq_test.jl")
     end
 end
