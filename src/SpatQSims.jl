@@ -90,6 +90,7 @@ export
 include("habq.jl")
 export
     HabQSpec,
+    HabQPrep,
     edge_hab,
     general_hab_distr,
     rocky_hab_distr,

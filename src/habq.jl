@@ -120,9 +120,9 @@ function prepare_habitat(simtype::Type{<:HabQSpec}, realization::Integer; save =
         h5open(fn, "w") do fid
             dom_size = size(hab)
             ghab = create_dataset(fid, "general_hab", datatype(Float64), dataspace(dom_size...))
-            ghab = hab[1]
+            ghab[:, :] = hab[1]
             rhab = create_dataset(fid, "rocky_hab", datatype(Bool), dataspace(dom_size...))
-            rhab = hab[2]
+            rhab[:, :] = hab[2]
         end
     end
     hab
