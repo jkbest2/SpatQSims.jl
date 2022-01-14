@@ -42,7 +42,7 @@ simstudy_dir(::Type{<:SharedQSpec}) = "sharedq"
 simstudy_dir(::Type{<:PrefIntensitySpec}) = "prefintensity"
 simstudy_dir(::Type{<:DensityDependentQSpec}) = "densdepq"
 simstudy_dir(::Type{<:HabQSpec}) = "habq"
-
+simstudy_dir(::Type{<:BycatchSpec}) = "bycatch"
 
 """
 Return the file prefix for the simulation study.
@@ -53,14 +53,15 @@ simstudy_prefix(::Type{<:SharedQSpec}) = "sharedq_"
 simstudy_prefix(::Type{<:PrefIntensitySpec}) = "prefintensity_"
 simstudy_prefix(::Type{<:DensityDependentQSpec}) = "densdepq_"
 simstudy_prefix(::Type{<:HabQSpec}) = "habq_"
+simstudy_prefix(::Type{<:BycatchSpec}) = "bycatch_"
 
-function prep_path(simtype::Type{<:HabQSpec}, repl::Integer; base_dir = ".")
+function prep_path(simtype::Type{<:SpatQSimSpec}, repl::Integer; base_dir = ".")
     normpath(base_dir,
              simstudy_dir(simtype),
              "repl_" * string(repl, pad = 2),
              simstudy_prefix(simtype) * "prep.h5")
 end
 
-function prep_path(spec::HabQSpec; base_dir = ".")
+function prep_path(spec::SpatQSimSpec; base_dir = ".")
     prep_path(typeof(spec), realization(spec); base_dir = base_dir)
 end

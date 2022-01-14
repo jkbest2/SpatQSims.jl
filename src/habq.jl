@@ -45,13 +45,9 @@ function move_rate()
     MovementRate(mov_fn)
 end
 
-function hab_pref(rocky_pref)
-    # HabitatPreference(general_hab_pref, rocky_hab_pref_gen(rocky_pref))
-    HabitatPreference(gh -> 1, rocky_hab_pref_gen(rocky_pref))
-end
-
-function make_moveop(hab::Habitat, rocky_pref, dom::AbstractFisheryDomain)
-    MovementModel(hab, hab_pref(rocky_pref), move_rate(), dom)
+function make_moveop(hab::Habitat, spec::SpatQSimSpec, dom::AbstractFisheryDomain)
+    pref = hab_pref(spec)
+    MovementModel(hab, pref, move_rate(), dom)
 end
 
 #-------------------------------------------------------------------------------
@@ -76,6 +72,11 @@ function HabQSpec(realization::Integer,
 end
 
 sim_value(spec::HabQSpec) = spec.rocky_pref
+
+function hab_pref(spec::HabQSpec)
+    rocky_pref = spec.rocky_pref
+    HabitatPreference(gh -> 1, rocky_hab_pref_gen(rocky_pref))
+end
 
 #-------------------------------------------------------------------------------
 
@@ -106,7 +107,7 @@ function HabQPrep(spec::HabQSpec; K = 100, save = false, base_dir = ".")
     else
         hab = get_habitat(spec)
     end
-    move = make_moveop(hab, sim_value(spec), dom)
+    move = make_moveop(hab, spec, dom)
     init_pop = eqdist(move, K)
 
     HabQPrep(dom, hab, move, init_pop)

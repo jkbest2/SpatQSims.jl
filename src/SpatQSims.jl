@@ -112,6 +112,22 @@ export
     prepare_habitat,
     get_habitat
 
+include("bycatch.jl")
+export
+    BycatchSpec,
+    simvalue,
+    hab_pref,
+    BycatchPrep,
+    domain,
+    habitat,
+    movement,
+    init_pop,
+    prepare_habitat,
+    get_habitat,
+    survey_vessel,
+    comm_vessel,
+    run_sims
+
 include("sim_pars.jl")
 export
     sim_values,

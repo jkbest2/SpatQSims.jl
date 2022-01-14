@@ -12,5 +12,6 @@ using Test
         include("prefintensity_test.jl")
         include("densdepq_test.jl")
         include("habq_test.jl")
+        include("bycatch_test.jl")
     end
 end
