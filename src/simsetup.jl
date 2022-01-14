@@ -68,3 +68,19 @@ function SpatQSimSetup(spec::HabQSpec, prep::HabQPrep)
                   15,
                   spec)
 end
+
+function SpatQSimSetup(spec::BycatchSpec, prep::BycatchPrep)
+    fleet = Fleet([survey_vessel(spec, prep),
+                   comm_vessel(spec, prep)],
+                  [length(survey_targeting(spec)), 40_000],
+                  [1, 2])
+
+
+    SpatQSimSetup(init_pop(prep),
+                  fleet,
+                  movement(prep),
+                  pop_dynamics(spec),
+                  domain(prep),
+                  15,
+                  spec)
+end
