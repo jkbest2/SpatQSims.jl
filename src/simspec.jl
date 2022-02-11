@@ -13,7 +13,8 @@ function survey_targeting(spec::SpatQSimSpec,
                           domain::AbstractFisheryDomain = domain(spec))
     # survey_stations = vec(LinearIndices(domain.n)[2:4:98, 5:10:95])
     survey_stations = vec(LinearIndices(domain.n)[3:5:98, 3:5:98])
-    FixedTargeting(survey_stations)
+    # FixedTargeting(survey_stations)
+    StratifiedRandomTargeting((20, 20), domain)
 end
 function comm_targeting(spec::SpatQSimSpec, prep::SpatQSimPrep)
     comm_q = comm_catchability(spec, prep)
@@ -53,7 +54,7 @@ function comm_vessel(spec::SpatQSimSpec, prep::SpatQSimPrep)
 end
 function fleet(spec::SpatQSimSpec, prep::SpatQSimPrep)
     survey = survey_vessel(spec)
-    n_survey_locs = length(survey.target.locations)
+    n_survey_locs = length(survey.target)
     comm = comm_vessel(spec, prep)
     Fleet([survey, comm],
           [n_survey_locs, 40_000],
