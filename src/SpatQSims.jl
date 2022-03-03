@@ -32,6 +32,15 @@ export
     HabQSpec,
     BycatchSpec
 
+include("habitat.jl")
+export
+    HabitatSpec,
+    length,
+    getindex,
+    rand,
+    save,
+    load_habitat
+
 include("realizations.jl")
 export
     generate_realizations,

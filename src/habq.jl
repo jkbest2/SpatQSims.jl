@@ -8,21 +8,8 @@ function edge_hab(dom, p = 0.5)
     -rand(dgr, 100, 100)
 end
 
-function general_hab_distr(dom, mean = zeros(size(dom)))
-    cov_kernel = Matérn32Cov(1.0, 20.0)
-    cov_mat = cov(cov_kernel, dom)
-    DomainDistribution(MvNormal(vec(mean), cov_mat), dom)
-end
-
 function general_hab_pref(gh)
     cdf(Normal(), gh)
-end
-
-function rocky_hab_distr(dom; wts = [0.75, 0.25])
-    cov_kernel = Matérn32Cov(1.0, 5.0)
-    cov_mat = cov(cov_kernel, dom)
-    distr = MvNormal(cov_mat)
-    ClassifiedDomainDistribution(distr, dom, wts)
 end
 
 function rocky_hab_pref_gen(pref = 1.0)
