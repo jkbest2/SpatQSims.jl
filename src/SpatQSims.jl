@@ -13,6 +13,8 @@ using Arrow
 import FisherySim: simulate, domain
 import Plots: plot
 
+include("constants.jl")
+# No exports
 include("realizations.jl")
 export
     generate_realizations,
