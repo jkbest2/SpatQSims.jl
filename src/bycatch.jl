@@ -1,23 +1,3 @@
-struct BycatchSpec{T} <: SpatQSimSpec
-    realization::Int
-    rocky_q::T
-    prep_file::String
-
-    function BycatchSpec(realization::Int,
-                         rocky_q::T,
-                         prep_file::String) where T<:Real
-        new{T}(realization, rocky_q, prep_file)
-    end
-end
-
-function BycatchSpec(realization::Integer,
-                     rocky_q::T;
-                     base_dir = ".") where T<:Real
-    prep_fn = prep_path(BycatchSpec, realization; base_dir = base_dir)
-    BycatchSpec(realization, rocky_q, prep_fn)
-end
-
-sim_value(spec::BycatchSpec) = spec.rocky_q
 
 function hab_pref(spec::BycatchSpec)
     HabitatPreference(general_hab_pref, rh -> 1.0)

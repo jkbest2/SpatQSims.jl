@@ -52,26 +52,6 @@ end
 
 #-------------------------------------------------------------------------------
 
-struct HabQSpec{T} <: SpatQSimSpec
-    realization::Int
-    rocky_pref::T
-    prep_file::String
-
-    function HabQSpec(realization::Int,
-                      rocky_pref::T,
-                      prep_file::String) where T<:Real
-        new{T}(realization, rocky_pref, prep_file)
-    end
-end
-
-function HabQSpec(realization::Integer,
-                  rocky_pref::T;
-                  base_dir = ".") where T<:Real
-    prep_fn = prep_path(HabQSpec, realization; base_dir = base_dir)
-    HabQSpec(realization, rocky_pref, prep_fn)
-end
-
-sim_value(spec::HabQSpec) = spec.rocky_pref
 
 function hab_pref(spec::HabQSpec)
     rocky_pref = spec.rocky_pref

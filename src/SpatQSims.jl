@@ -15,6 +15,23 @@ import Plots: plot
 
 include("constants.jl")
 # No exports
+
+include("spec.jl")
+export
+    SpatQSimSpec,
+    realization,
+    sim_value,
+    prep_file,
+    domain,
+    pop_dynamics,
+    n_years,
+    QDevScalingSpec,
+    SharedQSpec,
+    PrefIntensitySpec,
+    DensityDependentQSpec,
+    HabQSpec,
+    BycatchSpec
+
 include("realizations.jl")
 export
     generate_realizations,
