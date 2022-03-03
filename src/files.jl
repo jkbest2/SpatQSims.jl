@@ -65,3 +65,13 @@ end
 function prep_path(spec::SpatQSimSpec; base_dir = ".")
     prep_path(typeof(spec), realization(spec); base_dir = base_dir)
 end
+
+function make_repl_dir(simtype::Type{<:SpatQSimSpec}, repl::Integer; base_dir = ".")
+    pp = normpath(base_dir,
+                  simstudy_dir(simtype),
+                  "repl_" * string(repl, pad = 2))
+    mkpath(pp)
+end
+function make_repl_dir(spec::SpatQSimSpec; base_dir = ".")
+    make_repl_dir(typeof(spec), realization(spec); base_dir = base_dir)
+end

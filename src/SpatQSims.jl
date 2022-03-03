@@ -10,6 +10,7 @@ using CSV
 using StructArrays
 using Arrow
 
+import Base: length, getindex, rand
 import FisherySim: simulate, domain
 import Plots: plot
 
@@ -37,9 +38,12 @@ export
     HabitatSpec,
     length,
     getindex,
+    habnames,
+    habtypes,
     rand,
     save,
     load_habitat
+
 
 include("realizations.jl")
 export
@@ -175,7 +179,8 @@ export
     file_paths,
     simstudy_dir,
     simstudy_prefix,
-    prep_path
+    prep_path,
+    make_repl_dir
 
 include("simsetup.jl")
 export

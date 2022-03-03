@@ -4,27 +4,30 @@ struct HabitatSpec
 end
 
 function HabitatSpec(simtype::Type{<:SpatQSimSpec})
-    HabSpec(["habitat" => Float64,
-             "logq" => Float64])
+    HabitatSpec(["habitat" => Float64,
+                 "logq" => Float64])
 end
 
 function HabitatSpec(simtype::Type{<:DensityDependentQSpec})
-    HabSpec(["habitat" => Float64])
+    HabitatSpec(["habitat" => Float64])
 end
 
 function HabitatSpec(simtype::Type{<:HabQSpec})
-    HabSpec(["rocky_habitat" => Bool])
+    HabitatSpec(["rocky_habitat" => Bool])
 end
 
 function HabitatSpec(simtype::Type{<:BycatchSpec})
-    HabSpec(["habitat" => Float64,
-             "rocky_habitat" => Bool])
+    HabitatSpec(["habitat" => Float64,
+                 "rocky_habitat" => Bool])
 end
 
 HabitatSpec(spec::SpatQSimSpec) = HabitatSpec(typeof(spec))
 
-length(habspec::HabitatSpec) = length(HabitatSpec.habs)
-getindex(habspec::HabitatSpec, idx) = HabitatSpec.habs[idx]
+length(habspec::HabitatSpec) = length(habspec.habs)
+getindex(habspec::HabitatSpec, idx) = habspec.habs[idx]
+
+habnames(habspec::HabitatSpec) = first.(habspec.habs)
+habtypes(habspec::HabitatSpec) = last.(habspec.habs)
 
 # Generating habitat realizations -----------------------------------------------
 
@@ -60,10 +63,37 @@ function rand(habspec::HabitatSpec)
 end
 
 # File operations ---------------------------------------------------------------
-function save(hab::Habitat, spec::SpatQSimSpec; base_dir = ".")
+hab_presave(hab::Matrix) = hab
+hab_presave(hab::BitMatrix) = Matrix{Bool}(hab)
+function save(hab::Habitat, spec::SpatQSimSpec)
     habspec = HabitatSpec(spec)
+    hns = habnames(habspec)
+
+    make_repl_dir(spec)
+    h5open(prep_file(spec), "w") do h5
+        for idx in 1:length(hab)
+            h = hab[idx]
+            h2 = hab_presave(h)
+            write_dataset(h5, hns[idx], h2)
+        end
+    end
+    prep_file(spec)
 end
 
+hab_postload(hab::Matrix) = hab
+hab_postload(hab::Matrix{Bool}) = BitMatrix(hab)
 function load_habitat(spec::SpatQSimSpec)
     habspec = HabitatSpec(spec)
+    hns = habnames(habspec)
+
+    pfn = prep_file(spec)
+    habs = Any[]
+    h5open(pfn, "r") do h5
+        for idx in 1:length(habspec)
+            h = read_dataset(h5, hns[idx])
+            h2 = hab_postload(h)
+            push!(habs, h2)
+        end
+    end
+    Habitat(habs...)
 end
