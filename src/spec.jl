@@ -116,7 +116,7 @@ end
 
 sim_value(spec::HabQSpec) = spec.rocky_pref
 
-# Bycatch avoidance
+# Bycatch avoidance -------------------------------------------------------------
 struct BycatchSpec{T} <: SpatQSimSpec
     realization::Int
     rocky_q::T
