@@ -110,29 +110,6 @@ end
 
 #-------------------------------------------------------------------------------
 
-function survey_vessel(spec::HabQSpec, prep::HabQPrep)
-    dom = domain(prep)
-    hab = habitat(prep)
-    q = HabitatCatchability(hab, base_catchability().catchability, gh -> 1.0, rh -> rh ? 0.1 : 1.0)
-    q_real = getfield.(getindex.(Ref(q), eachindex(dom)), :catchability)
-    survey_q = Catchability(reshape(q_real, size(dom)...))
-    Vessel(survey_targeting(spec), survey_q, tweedie_shape(spec), tweedie_dispersion(spec))
-end
-
-function comm_vessel(spec::HabQSpec, prep::HabQPrep)
-    dom = domain(prep)
-    hab = habitat(prep)
-    q = HabitatCatchability(hab, base_catchability().catchability, gh -> 1.0, rh -> rh ? 0.9 : 1.0)
-    q_real = getfield.(getindex.(Ref(q), eachindex(dom)), :catchability)
-    comm_q = Catchability(reshape(q_real, size(dom)...))
-    comm_target = DynamicPreferentialTargeting(init_pop(prep).P,
-                                               p -> comm_q.catchability .* p)
-    Vessel(comm_target, comm_q, tweedie_shape(spec), tweedie_dispersion(spec))
-end
-
-
-#-------------------------------------------------------------------------------
-
 function run_sims(simtype::Type{HabQSpec},
                   repl_range::AbstractRange{<:Integer};
                   base_dir = ".",

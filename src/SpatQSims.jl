@@ -75,21 +75,30 @@ export
 include("simspec.jl")
 export
     SpatQSimSpec,
-    # realization,
-    # prep_file,
     domain,
     pop_dynamics,
-    survey_targeting,
-    comm_targeting,
+    n_years
+
+# include("habitat.jl")
+# export
+
+# include("movement.jl")
+# export
+
+
+include("fleet.jl")
+export
     base_catchability,
     survey_catchability,
     comm_catchability,
+    survey_targeting,
+    comm_targeting,
     tweedie_shape,
     tweedie_dispersion,
-    n_years,
     survey_vessel,
     comm_vessel,
     fleet
+
 
 include("qdevscaling.jl")
 export
