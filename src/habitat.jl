@@ -70,7 +70,7 @@ function save(hab::Habitat, spec::SpatQSimSpec)
     hns = habnames(habspec)
 
     make_repl_dir(spec)
-    h5open(prep_file(spec), "w") do h5
+    h5open(prep_file(spec), "cw") do h5
         for idx in 1:length(hab)
             h = hab[idx]
             h2 = hab_presave(h)

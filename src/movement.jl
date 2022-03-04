@@ -57,7 +57,7 @@ end
 function save(moveop::MovementModel, spec::SpatQSimSpec)
     make_repl_dir(spec)
     pfn = prep_file(spec)
-    h5open(pfn, "w") do h5
+    h5open(pfn, "cw") do h5
         write_dataset(h5, "movement", moveop.M)
     end
     pfn
