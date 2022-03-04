@@ -7,14 +7,14 @@ function survey_catchability(::SpatQSimSpec)
     base_catchability()
 end
 function comm_catchability(spec::SpatQSimSpec, prep::SpatQSimPrep)
-    qdevs = transform_log_qdevs(log_qdevs(prep), comm_qdev_scale(spec))
+    qdevs = scale_log_devs(log_qdevs(prep), comm_qdev_scale(spec))
     Catchability(base_catchability().catchability .* qdevs)
 end
 
 # Shared catchability
 function survey_catchability(spec::SharedQSpec, prep::SpatQSimPrep)
-    qdevs = transform_log_qdevs(log_qdevs(prep),
-                                sim_value(spec) * comm_qdev_scale(spec))
+    qdevs = scale_log_devs(log_qdevs(prep),
+                           sim_value(spec) * comm_qdev_scale(spec))
     Catchability(base_catchability().catchability .* qdevs)
 end
 
@@ -102,6 +102,6 @@ function fleet(spec::SpatQSimSpec, prep::SpatQSimPrep)
     n_survey_locs = length(survey.target)
     comm = comm_vessel(spec, prep)
     Fleet([survey, comm],
-          [n_survey_locs, 40_000],
+          [n_survey_locs, SIM_NCOMMFISH],
           [1, 2])               # survey fishes first
 end

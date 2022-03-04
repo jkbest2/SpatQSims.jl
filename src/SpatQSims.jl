@@ -75,11 +75,6 @@ include("prep_sims.jl")
 export
     prep_sims
 
-include("scale_devs.jl")
-export
-    scale_devs,
-    transform_log_qdevs
-
 include("simprep.jl")
 export
     get_realization,
