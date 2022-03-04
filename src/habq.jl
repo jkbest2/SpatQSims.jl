@@ -1,21 +1,4 @@
-
-function generate_habitat(dom)
-    gen_hab = rand(general_hab_distr(dom))
-    rocky_hab = rand(rocky_hab_distr(dom))
-    Habitat(gen_hab, rocky_hab)
-end
-
 #-------------------------------------------------------------------------------
-
-function move_rate()
-    mov_fn(d) = Matérn32Cov(1.0, 2.5)(d)
-    MovementRate(mov_fn)
-end
-
-function make_moveop(hab::Habitat, spec::SpatQSimSpec, dom::AbstractFisheryDomain)
-    pref = hab_pref(spec)
-    MovementModel(hab, pref, move_rate(), dom)
-end
 
 #-------------------------------------------------------------------------------
 

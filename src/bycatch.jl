@@ -85,18 +85,6 @@ function run_sims(simtype::Type{BycatchSpec},
     nothing
 end
 
-# function complete_results(spec; csv = false, feather = true)
-#     files = file_paths(spec)
-#     complete = isfile(files[1])
-#     if csv
-#         complete &= all(isfile.(files[2:3]))
-#     end
-#     if feather
-#         complete &= all(isfile.(files[4:5]))
-#     end
-#     complete
-# end
-
 function run_sims(simtype::Type{BycatchSpec},
                   rlz::Integer;
                   base_dir = ".",

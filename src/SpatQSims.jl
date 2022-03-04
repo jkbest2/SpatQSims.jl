@@ -119,75 +119,75 @@ export
     fleet
 
 
-include("qdevscaling.jl")
-export
-    QDevScalingSpec,
-    sim_value,
-    comm_qdev_scale
+# include("qdevscaling.jl")
+# export
+#     QDevScalingSpec,
+#     sim_value,
+#     comm_qdev_scale
 
-include("sharedq.jl")
-export
-    SharedQSpec,
-    sim_value,
-    survey_catchability
+# include("sharedq.jl")
+# export
+#     SharedQSpec,
+#     sim_value,
+#     survey_catchability
 
-include("prefintensity.jl")
-export
-    PrefIntensitySpec,
-    sim_value,
-    comm_targeting
+# include("prefintensity.jl")
+# export
+#     PrefIntensitySpec,
+#     sim_value,
+#     comm_targeting
 
-include("densdepq.jl")
-export
-    DensityDependentQSpec,
-    sim_value,
-    comm_catchability
+# include("densdepq.jl")
+# export
+#     DensityDependentQSpec,
+#     sim_value,
+#     comm_catchability
 
-include("habq.jl")
-export
-    HabQSpec,
-    HabQPrep,
-    edge_hab,
-    general_hab_distr,
-    rocky_hab_distr,
-    generate_habitat,
-    general_hab_pref,
-    rocky_hab_pref_gen,
-    generate_habitat,
-    move_rate,
-    make_moveop,
-    sim_value,
-    survey_catchability,
-    comm_catchability,
-    prepare,
-    setup,
-    habitat,
-    domain,
-    movement,
-    init_pop,
-    prepare_habitat,
-    get_habitat
+# include("habq.jl")
+# export
+#     HabQSpec,
+#     HabQPrep,
+#     edge_hab,
+#     general_hab_distr,
+#     rocky_hab_distr,
+#     generate_habitat,
+#     general_hab_pref,
+#     rocky_hab_pref_gen,
+#     generate_habitat,
+#     move_rate,
+#     make_moveop,
+#     sim_value,
+#     survey_catchability,
+#     comm_catchability,
+#     prepare,
+#     setup,
+#     habitat,
+#     domain,
+#     movement,
+#     init_pop,
+#     prepare_habitat,
+#     get_habitat
 
-include("bycatch.jl")
-export
-    BycatchSpec,
-    simvalue,
-    hab_pref,
-    BycatchPrep,
-    domain,
-    habitat,
-    movement,
-    init_pop,
-    prepare_habitat,
-    get_habitat,
-    survey_vessel,
-    comm_vessel,
-    run_sims
+# include("bycatch.jl")
+# export
+#     BycatchSpec,
+#     simvalue,
+#     hab_pref,
+#     BycatchPrep,
+#     domain,
+#     habitat,
+#     movement,
+#     init_pop,
+#     prepare_habitat,
+#     get_habitat,
+#     survey_vessel,
+#     comm_vessel,
+#     run_sims
 
-include("sim_pars.jl")
-export
-    sim_values,
-    sim_value_idx
+# include("sim_pars.jl")
+# export
+#     sim_values,
+#     sim_value_idx
 
 include("files.jl")
 export
@@ -197,10 +197,10 @@ export
     prep_path,
     make_repl_dir
 
-include("simsetup.jl")
-export
-    SpatQSimSetup,
-    simulate
+# include("simsetup.jl")
+# export
+#     SpatQSimSetup,
+#     simulate
 
 include("run_sims.jl")
 export
