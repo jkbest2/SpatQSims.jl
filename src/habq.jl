@@ -1,23 +1,3 @@
-function edge_hab(dom, p = 0.5)
-    lower = ceil(Int, 100 * (1 - p))
-    upper = floor(Int, 100 * p)
-    hab = zeros(Int, size(dom))
-    hab[lower:upper, lower:upper] .= 1
-    src = LinearIndices(size(dom))[findall(==(1), hab)]
-    dgr = DistanceGradient(src)
-    -rand(dgr, 100, 100)
-end
-
-function general_hab_pref(gh)
-    cdf(Normal(), gh)
-end
-
-function rocky_hab_pref_gen(pref = 1.0)
-    function pref_fn(rh)
-        rh ? pref : one(pref)
-    end
-    pref_fn
-end
 
 function generate_habitat(dom)
     gen_hab = rand(general_hab_distr(dom))
@@ -39,11 +19,6 @@ end
 
 #-------------------------------------------------------------------------------
 
-
-function hab_pref(spec::HabQSpec)
-    rocky_pref = spec.rocky_pref
-    HabitatPreference(gh -> 1, rocky_hab_pref_gen(rocky_pref))
-end
 
 #-------------------------------------------------------------------------------
 

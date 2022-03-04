@@ -4,7 +4,7 @@
              PrefIntensitySpec(3, 2.0),
              DensityDependentQSpec(4, 3.0),
              HabQSpec(5, 2.0),
-             BycatchSpec(6, 0.5)
+             BycatchSpec(6, 0.5)]
     svals = [1.0, 0.5, 2.0, 3.0, 2.0, 0.5]
  pfns = ["qdevscaling/repl_01/qdevscale_prep.h5",
             "sharedq/repl_02/sharedq_prep.h5",

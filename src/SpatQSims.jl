@@ -11,7 +11,7 @@ using StructArrays
 using Arrow
 
 import Base: length, getindex, rand
-import FisherySim: simulate, domain
+import FisherySim: simulate, domain, HabitatPreference, MovementModel
 import Plots: plot
 
 include("constants.jl")
@@ -44,6 +44,12 @@ export
     save,
     load_habitat
 
+include("movement.jl")
+export
+    HabitatPreference,
+    MovementModel,
+    save,
+    load_movement
 
 include("realizations.jl")
 export
