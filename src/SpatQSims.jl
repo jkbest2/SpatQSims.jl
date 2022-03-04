@@ -14,8 +14,10 @@ import Base: length, getindex, rand
 import FisherySim: simulate, domain, HabitatPreference, MovementModel
 import Plots: plot
 
-include("constants.jl")
-# No exports
+include("scale_devs.jl")
+export
+    scale_devs,
+    scale_log_devs
 
 include("spec.jl")
 export
@@ -32,6 +34,12 @@ export
     DensityDependentQSpec,
     HabQSpec,
     BycatchSpec
+
+# Control has to be after spec
+include("control.jl")
+export
+    sim_values,
+    sim_value_idx
 
 include("habitat.jl")
 export
