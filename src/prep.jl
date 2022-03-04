@@ -51,6 +51,11 @@ end
 
 # Prepare multiple realizations -------------------------------------------------
 function prep_sims(simtype::Type{<:SpatQSimSpec}, n; base_dir = ".")
+    pfns = String[]
     for rlz in 1:n
-        spec = simtype(rlz, one(), )
-        prep = SpatQSimPrep()
+        spec = simtype(rlz, one(); base_dir = base_dir)
+        prep = SpatQSimPrep(spec)
+        push!(pfns, save(prep))
+    end
+    pfns
+end
