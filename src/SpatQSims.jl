@@ -59,38 +59,44 @@ export
     save,
     load_movement
 
-include("realizations.jl")
+include("prep.jl")
 export
-    generate_realizations,
-    save_realizations,
-    load_realization,
-    load_movement,
-    # save_realizations
-    load_spatial_eq,
-    load_popstate,
-    # save_realizations,
-    load_cathcability
-
-include("prep_sims.jl")
-export
-    prep_sims
-
-include("simprep.jl")
-export
-    get_realization,
     SpatQSimPrep,
-    movement,
-    init_pop,
-    log_qdevs,
-    realization,
-    prep_file
+    save,
+    load_prep
 
-include("simspec.jl")
-export
-    SpatQSimSpec,
-    domain,
-    pop_dynamics,
-    n_years
+# include("realizations.jl")
+# export
+#     generate_realizations,
+#     save_realizations,
+#     load_realization,
+#     load_movement,
+#     # save_realizations
+#     load_spatial_eq,
+#     load_popstate,
+#     # save_realizations,
+#     load_cathcability
+
+# include("prep_sims.jl")
+# export
+#     prep_sims
+
+# include("simprep.jl")
+# export
+#     get_realization,
+#     SpatQSimPrep,
+#     movement,
+#     init_pop,
+#     log_qdevs,
+#     realization,
+#     prep_file
+
+# include("simspec.jl")
+# export
+#     SpatQSimSpec,
+#     domain,
+#     pop_dynamics,
+#     n_years
 
 # include("habitat.jl")
 # export
