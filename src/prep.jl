@@ -25,6 +25,13 @@ function SpatQSimPrep(spec::SpatQSimSpec)
     SpatQSimPrep(spec, habitat, movement, init_pop)
 end
 
+# Accessors ---------------------------------------------------------------------
+simspec(prep::SpatQSimPrep) = prep.spec
+habitat(prep::SpatQSimPrep) = prep.habitat
+movement(prep::SpatQSimPrep) = prep.movement
+init_pop(prep::SpatQSimPrep) = prep.init_pop
+domain(prep::SpatQSimPrep) = domain(simspec(prep))
+
 # File operations ---------------------------------------------------------------
 function save(prep::SpatQSimPrep)
     save(prep.habitat, prep.spec)

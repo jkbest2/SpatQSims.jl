@@ -10,6 +10,16 @@ const SIM_K = 100.0
 # Number of commercial fishing events per year ----------------------------------
 const SIM_NCOMMFISH = 40_000
 
+# Base catchability -------------------------------------------------------------
+const SIM_BASEQ = 0.01
+
+# Commercial catchability deviation scale ---------------------------------------
+const SIM_COMM_QDEVSCALE = 0.05
+
+# Tweedie parameters ------------------------------------------------------------
+const SIM_TWEEDIE_SHAPE = 1.84
+const SIM_TWEEDIE_DISPERSION = 1.2
+
 # Scenario parameters -----------------------------------------------------------
 """
     sim_values(::Type{T}) where T<:SpatQSimSpec

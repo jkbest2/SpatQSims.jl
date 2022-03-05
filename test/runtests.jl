@@ -8,6 +8,7 @@ using Test
         include("habitat_test.jl")
         include("movement_test.jl")
         include("prep_test.jl")
+        include("fleet_test.jl")
         # prep_sims(1, "prep.h5")
         # @test "prep.h5" in readdir()
 

@@ -1,107 +1,126 @@
 # Catchability ------------------------------------------------------------------
 # Default
-base_catchability() = Catchability(0.01)
-comm_qdev_scale(::SpatQSimSpec) = 0.05
+comm_qdev_scale(::SpatQSimSpec) = SIM_COMM_QDEVSCALE
 comm_qdev_scale(spec::QDevScalingSpec) = sim_value(spec)
-function survey_catchability(::SpatQSimSpec)
-    base_catchability()
+
+function survey_catchability(::SpatQSimPrep{<:SpatQSimSpec})
+    Catchability(SIM_BASEQ)
 end
-function comm_catchability(spec::SpatQSimSpec, prep::SpatQSimPrep)
-    qdevs = scale_log_devs(log_qdevs(prep), comm_qdev_scale(spec))
-    Catchability(base_catchability().catchability .* qdevs)
+function comm_catchability(prep::SpatQSimPrep{<:SpatQSimSpec})
+    spec = simspec(prep)
+    habs = habitat(prep)
+
+    qdev_scale = comm_qdev_scale(spec)
+    qdevs = scale_log_devs(habs[2], qdev_scale)
+
+    Catchability(SIM_BASEQ .* qdevs)
 end
 
 # Shared catchability
-function survey_catchability(spec::SharedQSpec, prep::SpatQSimPrep)
-    qdevs = scale_log_devs(log_qdevs(prep),
-                           sim_value(spec) * comm_qdev_scale(spec))
-    Catchability(base_catchability().catchability .* qdevs)
+function survey_catchability(prep::SpatQSimPrep{<:SharedQSpec})
+    spec = simspec(prep)
+    habs = habitat(prep)
+
+    qdev_scale = sim_value(spec) * comm_qdev_scale(spec)
+    qdevs = scale_log_devs(habs[2], qdev_scale)
+
+    Catchability(SIM_BASEQ .* qdevs)
 end
 
 # Density dependent catchability
-function comm_catchability(spec::DensityDependentQSpec, prep::SpatQSimPrep)
-    DensityDependentCatchability(base_catchability(), spec.densdep_mult)
+function comm_catchability(prep::SpatQSimPrep{<:DensityDependentQSpec})
+    DensityDependentCatchability(SIM_BASEQ, sim_value(simspec(prep)))
 end
 
 # Habitat-dependent catchability
-function survey_catchability(spec::HabQSpec, prep::SpatQSimPrep)
+function survey_catchability(prep::SpatQSimPrep{<:HabQSpec})
     dom = domain(prep)
     hab = habitat(prep)
+
     q = HabitatCatchability(hab,
-                            base_catchability().catchability,
+                            SIM_BASEQ,
                             rh -> rh ? 0.1 : 1.0)
     q_real = getfield.(getindex.(Ref(q), eachindex(dom)), :catchability)
     Catchability(reshape(q_real, size(dom)...))
 end
-function comm_catchability(spec::HabQSpec, prep::SpatQSimPrep)
+function comm_catchability(prep::SpatQSimPrep{<:HabQSpec})
     dom = domain(prep)
     hab = habitat(prep)
+
     q = HabitatCatchability(hab,
-                            base_catchability().catchability,
+                            SIM_BASEQ,
                             rh -> rh ? 0.9 : 1.0)
     q_real = getfield.(getindex.(Ref(q), eachindex(dom)), :catchability)
     Catchability(reshape(q_real, size(dom)...))
 end
 
 # Bycatch
-function comm_catchability(spec::BycatchSpec, prep::SpatQSimPrep)
+function comm_catchability(prep::SpatQSimPrep{<:BycatchSpec})
+    spec = simspec(prep)
+    rocky_q = sim_value(spec)
     dom = domain(prep)
     hab = habitat(prep)
+
     q = HabitatCatchability(hab,
-                            base_catchability().catchability,
-                            gh -> 1.0,
-                            rh -> rh ? spec.rocky_q : 1.0)
+                            SIM_BASEQ,
+                            one,
+                            rh -> rh ? rocky_q : 1.0)
     q_real = getfield.(getindex.(Ref(q), eachindex(dom)), :catchability)
     Catchability(reshape(q_real, size(dom)...))
 end
 
 # Targeting ---------------------------------------------------------------------
 # Default vessel targeting behavior
-function survey_targeting(spec::SpatQSimSpec,
-                          domain::AbstractFisheryDomain = domain(spec))
-    survey_stations = vec(LinearIndices(domain.n)[3:5:98, 3:5:98])
-    StratifiedRandomTargeting((20, 20), domain)
+function survey_targeting(prep::SpatQSimPrep)
+    dom = domain(prep)
+    StratifiedRandomTargeting((20, 20), dom)
 end
-function comm_targeting(spec::SpatQSimSpec, prep::SpatQSimPrep)
-    comm_q = comm_catchability(spec, prep)
+function comm_targeting(prep::SpatQSimPrep)
+    comm_q = comm_catchability(prep)
     DynamicPreferentialTargeting(init_pop(prep).P,
                                  pop -> pop .* comm_q.catchability)
 end
 
 # Preference intensity
-function comm_targeting(spec::PrefIntensitySpec, prep::SpatQSimPrep)
-    comm_q = comm_catchability(spec, prep)
+function comm_targeting(prep::SpatQSimPrep{<:PrefIntensitySpec})
+    spec = simspec(prep)
+    comm_q = comm_catchability(prep)
     DynamicPreferentialTargeting(init_pop(prep).P,
                                  p -> (comm_q.catchability .* p) .^ sim_value(spec))
 end
 
-# Tweedie parameters ------------------------------------------------------------
-# Define default Tweedie shape and dispersion parameter values
-tweedie_shape(::SpatQSimSpec) = 1.84
-tweedie_dispersion(::SpatQSimSpec) = 1.2
+# Density-dependent catchability
+function comm_targeting(prep::SpatQSimPrep{<:DensityDependentQSpec})
+    spec = simspec(prep)
+    comm_q = comm_catchability(prep)
+    p0 = init_pop(prep).P
+
+    DynamicPreferentialTargeting(p0,
+                                 pop -> comm_q .* pop)
+end
 
 # Vessels -----------------------------------------------------------------------
 # Define functions to construct survey and commercial vessel types, then use
 # these to construct the Fleet
-function survey_vessel(spec::SpatQSimSpec)
-    Vessel(survey_targeting(spec),
-           survey_catchability(spec),
-           tweedie_shape(spec),
-           tweedie_dispersion(spec))
+function survey_vessel(prep::SpatQSimPrep)
+    Vessel(survey_targeting(prep),
+           survey_catchability(prep),
+           SIM_TWEEDIE_SHAPE,
+           SIM_TWEEDIE_DISPERSION)
 end
-function comm_vessel(spec::SpatQSimSpec, prep::SpatQSimPrep)
-    Vessel(comm_targeting(spec, prep),
-           comm_catchability(spec, prep),
-           tweedie_shape(spec),
-           tweedie_dispersion(spec))
+function comm_vessel(prep::SpatQSimPrep)
+    Vessel(comm_targeting(prep),
+           comm_catchability(prep),
+           SIM_TWEEDIE_SHAPE,
+           SIM_TWEEDIE_DISPERSION)
 end
 
 # Fleet -------------------------------------------------------------------------
-function fleet(spec::SpatQSimSpec, prep::SpatQSimPrep)
-    survey = survey_vessel(spec)
+function Fleet(prep::SpatQSimPrep)
+    survey = survey_vessel(prep)
     n_survey_locs = length(survey.target)
-    comm = comm_vessel(spec, prep)
+    comm = comm_vessel(prep)
     Fleet([survey, comm],
           [n_survey_locs, SIM_NCOMMFISH],
-          [1, 2])               # survey fishes first
+          [1, 2])                           # Survey fishes first
 end

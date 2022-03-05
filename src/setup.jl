@@ -27,15 +27,14 @@ struct SpatQSimSetup{P,F,M,R,D,S}
     end
 end
 
-function SpatQSimSetup(spec::SpatQSimSpec,
-                       prep::SpatQSimPrep)
-    SpatQSimSetup(init_pop(prep),
-                  fleet(spec, prep),
+function SpatQSimSetup(prep::SpatQSimPrep)
+    SpatQSimSetup(prep.init_pop,
+                  fleet(prep),
                   movement(prep),
-                  pop_dynamics(spec),
-                  domain(spec),
-                  n_years(spec),
-                  spec)
+                  pop_dynamics(prep.spec),
+                  domain(prep.spec),
+                  SIM_NYEARS,
+                  prep.spec)
 end
 
 function SpatQSimSetup(spec::SpatQSimSpec)

@@ -11,7 +11,7 @@ using StructArrays
 using Arrow
 
 import Base: length, getindex, rand
-import FisherySim: simulate, domain, HabitatPreference, MovementModel
+import FisherySim: simulate, domain, HabitatPreference, MovementModel, Fleet
 import Plots: plot
 
 include("scale_devs.jl")
@@ -62,8 +62,24 @@ export
 include("prep.jl")
 export
     SpatQSimPrep,
+    simspec,
+    habitat,
+    movement,
+    init_pop,
     save,
     load_prep
+
+include("fleet.jl")
+export
+    survey_catchability,
+    comm_catchability,
+    survey_targeting,
+    comm_targeting,
+    tweedie_shape,
+    tweedie_dispersion,
+    survey_vessel,
+    comm_vessel,
+    Fleet
 
 # include("realizations.jl")
 # export
@@ -104,19 +120,6 @@ export
 # include("movement.jl")
 # export
 
-
-include("fleet.jl")
-export
-    base_catchability,
-    survey_catchability,
-    comm_catchability,
-    survey_targeting,
-    comm_targeting,
-    tweedie_shape,
-    tweedie_dispersion,
-    survey_vessel,
-    comm_vessel,
-    fleet
 
 
 # include("qdevscaling.jl")
