@@ -116,7 +116,7 @@ function comm_vessel(prep::SpatQSimPrep)
 end
 
 # Fleet -------------------------------------------------------------------------
-function Fleet(prep::SpatQSimPrep)
+function fleet(prep::SpatQSimPrep)
     survey = survey_vessel(prep)
     n_survey_locs = length(survey.target)
     comm = comm_vessel(prep)

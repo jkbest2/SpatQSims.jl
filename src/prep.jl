@@ -31,6 +31,7 @@ habitat(prep::SpatQSimPrep) = prep.habitat
 movement(prep::SpatQSimPrep) = prep.movement
 init_pop(prep::SpatQSimPrep) = prep.init_pop
 domain(prep::SpatQSimPrep) = domain(simspec(prep))
+pop_dynamics(prep::SpatQSimPrep) = pop_dynamics(simspec(prep))
 
 # File operations ---------------------------------------------------------------
 function save(prep::SpatQSimPrep)

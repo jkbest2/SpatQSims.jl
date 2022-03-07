@@ -81,6 +81,17 @@ export
     comm_vessel,
     Fleet
 
+include("setup.jl")
+export
+    SpatQSimSetup,
+    simspec,
+    init_pop,
+    fleet,
+    movement,
+    pop_dynamics,
+    domain,
+    n_years
+
 # include("realizations.jl")
 # export
 #     generate_realizations,

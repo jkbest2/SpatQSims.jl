@@ -1,4 +1,5 @@
 using SpatQSims
+using FisherySim
 using Test
 
 @testset "SpatQSims.jl" begin
@@ -9,6 +10,7 @@ using Test
         include("movement_test.jl")
         include("prep_test.jl")
         include("fleet_test.jl")
+        include("setup_test.jl")
         # prep_sims(1, "prep.h5")
         # @test "prep.h5" in readdir()
 
