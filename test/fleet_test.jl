@@ -6,7 +6,7 @@
              HabQSpec(5, 2.0),
              BycatchSpec(6, 0.5)]
     preps = SpatQSimPrep.(specs)
-    fleets = Fleet.(preps)
+    fleets = fleet.(preps)
 
     # Not sure what to test here, but at least I'll know everything runs
     @test length(fleets) == 6
