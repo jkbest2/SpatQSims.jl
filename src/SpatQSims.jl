@@ -35,6 +35,14 @@ export
     HabQSpec,
     BycatchSpec
 
+include("files.jl")
+export
+    file_paths,
+    simstudy_dir,
+    simstudy_prefix,
+    prep_path,
+    make_repl_dir
+
 # Control has to be after spec
 include("control.jl")
 export
@@ -91,6 +99,22 @@ export
     pop_dynamics,
     domain,
     n_years
+
+include("simulate.jl")
+export
+    simulate,
+    result_saved,
+    run_sims
+
+include("simresult.jl")
+export
+    SpatQSimResult,
+    simspec,
+    file_paths,
+    save,
+    save_pop_hdf5,
+    save_pop_csv,
+    save_catch_csv
 
 # include("realizations.jl")
 # export
@@ -203,32 +227,14 @@ export
 #     sim_values,
 #     sim_value_idx
 
-include("files.jl")
-export
-    file_paths,
-    simstudy_dir,
-    simstudy_prefix,
-    prep_path,
-    make_repl_dir
-
 # include("simsetup.jl")
 # export
 #     SpatQSimSetup,
 #     simulate
 
-include("run_sims.jl")
-export
-    run_sims
-
-include("simresult.jl")
-export
-    SpatQSimResult,
-    # realization,
-    file_paths,
-    save,
-    save_pop_hdf5,
-    save_pop_csv,
-    save_catch_csv
+# include("run_sims.jl")
+# export
+#     run_sims
 
 include("plots.jl")
 export

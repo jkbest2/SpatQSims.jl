@@ -11,6 +11,7 @@ using Test
         include("prep_test.jl")
         include("fleet_test.jl")
         include("setup_test.jl")
+        include("simulate_test.jl")
         # prep_sims(1, "prep.h5")
         # @test "prep.h5" in readdir()
 
