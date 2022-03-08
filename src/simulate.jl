@@ -29,7 +29,7 @@ function result_saved(spec::SpatQSimSpec; csv = false, feather = true)
 end
 
 function run_sims(specs::Array{<:SpatQSimSpec};
-                  load_saved_setup = true,
+                  load_saved_prep = true,
                   checkpoint = true,
                   csv = false,
                   feather = true)
@@ -40,7 +40,7 @@ function run_sims(specs::Array{<:SpatQSimSpec};
         if (checkpoint && result_saved(spec; csv = csv, feather = feather))
             continue
         end
-        setup = SpatQSimSetup(spec; load_saved_setup = true)
+        setup = SpatQSimSetup(spec; load_saved_prep = true)
         result = simulate(setup)
         save(result; csv = csv, feather = feather)
     end
@@ -49,13 +49,13 @@ end
 
 function run_sims(simtype::Type{<:SpatQSimSpec},
                   repls::AbstractArray{<:Integer};
-                  load_saved_setup = true,
+                  load_saved_prep = true,
                   checkpoint = true,
                   csv = false,
                   feather = true)
     specs = simtype.(repls, (sim_values(simtype))')
     run_sims(specs;
-             load_saved_setup = load_saved_setup,
+             load_saved_prep = load_saved_prep,
              checkpoint = checkpoint,
              csv = csv,
              feather = feather)

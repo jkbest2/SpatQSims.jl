@@ -1,6 +1,6 @@
 @testset "Setup" begin
     spec = BycatchSpec(1, 0.4)
-    setup = SpatQSimSetup(spec; load_saved_setup = true)
+    setup = SpatQSimSetup(spec; load_saved_prep = true)
 
     @test simspec(setup) == spec
     @test init_pop(setup) isa PopState

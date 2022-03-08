@@ -39,8 +39,8 @@ function SpatQSimSetup(prep::SpatQSimPrep)
                   SIM_NYEARS)
 end
 
-function SpatQSimSetup(spec::SpatQSimSpec; load_saved_setup = false)
-    if load_saved_setup
+function SpatQSimSetup(spec::SpatQSimSpec; load_saved_prep = false)
+    if load_saved_prep
         prep = load_prep(spec)
     else
         prep = SpatQSimPrep(spec)
