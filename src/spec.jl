@@ -11,6 +11,7 @@ pop_dynamics(::SpatQSimSpec) = Schaefer(0.0, 100.0)
 # Number of years to simulate
 n_years(::SpatQSimSpec) = SIM_NYEARS
 
+
 # Catchability deviation scaling ------------------------------------------------
 struct QDevScalingSpec{T} <: SpatQSimSpec
     realization::Int
@@ -20,6 +21,7 @@ struct QDevScalingSpec{T} <: SpatQSimSpec
     function QDevScalingSpec(realization::Int,
                              qdev_scale::T,
                              prep_file::String) where T
+        qdev_scale in sim_values(QDevScalingSpec) || error("Invalid qdev_scale value")
         new{T}(realization, qdev_scale, prep_file)
     end
 end
@@ -41,6 +43,7 @@ struct SharedQSpec{T} <: SpatQSimSpec
     function SharedQSpec(realization::Int,
                          share_scale::T,
                          prep_file::String) where T
+        share_scale in sim_values(SharedQSpec) || error("Invalid share_scale value")
         new{T}(realization, share_scale, prep_file)
     end
 end
@@ -62,6 +65,7 @@ struct PrefIntensitySpec{T} <: SpatQSimSpec
     function PrefIntensitySpec(realization::Int,
                                 pref_power::T,
                                 prep_file::String) where T
+        pref_power in sim_values(PrefIntensitySpec) || error("Invalid pref_power value")
         new{T}(realization, pref_power, prep_file)
     end
 end
@@ -83,6 +87,7 @@ struct DensityDependentQSpec{T} <: SpatQSimSpec
     function DensityDependentQSpec(realization::Int,
                              densdep_mult::T,
                              prep_file::String) where T
+        densdep_mult in sim_values(DensityDependentQSpec) || error("Invalid densdep_mult value")
         new{T}(realization, densdep_mult, prep_file)
     end
 end
@@ -104,6 +109,7 @@ struct HabQSpec{T} <: SpatQSimSpec
     function HabQSpec(realization::Int,
                       rocky_pref::T,
                       prep_file::String) where T<:Real
+        rocky_pref in sim_values(HabQSpec) || error("Invalid rocky_pref value")
         new{T}(realization, rocky_pref, prep_file)
     end
 end
@@ -125,6 +131,7 @@ struct BycatchSpec{T} <: SpatQSimSpec
     function BycatchSpec(realization::Int,
                          rocky_q::T,
                          prep_file::String) where T<:Real
+        rocky_q in sim_values(BycatchSpec) || error("Invalid rocky_q value")
         new{T}(realization, rocky_q, prep_file)
     end
 end

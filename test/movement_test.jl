@@ -1,5 +1,6 @@
 @testset "Movement" begin
-    spec = HabQSpec(5, 2.0)
+    spec = HabQSpec(25, 2.0)
+    make_repl_dir(spec)
     hab = load_habitat(spec)
 
     mov = MovementModel(hab, spec)

@@ -1,10 +1,11 @@
 @testset "Habitat" begin
-    specs = [QDevScalingSpec(1, 1.0),
-             SharedQSpec(2, 0.5),
-             PrefIntensitySpec(3, 2.0),
-             DensityDependentQSpec(4, 3.0),
-             HabQSpec(5, 2.0),
-             BycatchSpec(6, 0.5)]
+    specs = [QDevScalingSpec(11, 0.1),
+             SharedQSpec(12, 0.4),
+             PrefIntensitySpec(13, 4),
+             DensityDependentQSpec(4, 1.0),
+             HabQSpec(15, 2.0),
+             BycatchSpec(16, 0.6)]
+    make_repl_dir.(specs)
     habspecs = HabitatSpec.(specs)
     habs = rand.(habspecs)
 
