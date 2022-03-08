@@ -13,23 +13,27 @@ struct SpatQSimResult{P,C,S}
     end
 end
 
-realization(result::SpatQSimResult) = realization(result.spec)
+simspec(result::SpatQSimResult) = result.spec
+realization(result::SpatQSimResult) = realization(simspec(result))
+
 function save(result::SpatQSimResult; csv = false, feather = true)
-    files = file_paths(result.spec)
-    save_pop_hdf5(result, files[1])
+    make_repl_dir(simspec(result))
+
+    files = file_paths(simspec(result))
+    save_pop_hdf5(result, files[:pop_h5])
     if (csv)
-        save_pop_csv(result, files[2])
-        save_catch_csv(result, files[3])
+        save_pop_csv(result, files[:pop_csv])
+        save_catch_csv(result, files[:catch_csv])
     end
     if (feather)
-        save_pop_feather(result, files[4])
-        save_catch_feather(result, files[5])
+        save_pop_feather(result, files[:pop_feather])
+        save_catch_feather(result, files[:catch_feather])
     end
     files
 end
 
 function save_pop_hdf5(result::SpatQSimResult, file_name::String)
-    domain_size = size(domain(result.spec))
+    domain_size = size(domain(simspec(result)))
     h5open(file_name, "w") do fid
         pop_save = create_dataset(fid, "popstate", datatype(Float64),
                                   dataspace(domain_size...,
