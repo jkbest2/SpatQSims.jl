@@ -1,5 +1,5 @@
 @testset "Prep" begin
-    spec = BycatchSpec(6, 0.6)
+    spec = BycatchSpec(1, 0.6)
 
     prep = SpatQSimPrep(spec)
     save(prep)

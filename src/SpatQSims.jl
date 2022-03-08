@@ -65,7 +65,10 @@ export
     HabitatPreference,
     MovementModel,
     save,
-    load_movement
+    load_movement,
+    init_pop,
+    save,
+    load_init_pop
 
 include("prep.jl")
 export

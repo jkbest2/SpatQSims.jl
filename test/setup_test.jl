@@ -1,5 +1,5 @@
 @testset "Setup" begin
-    spec = BycatchSpec(1, 0.4)
+    spec = BycatchSpec(1, 0.6)
     setup = SpatQSimSetup(spec; load_saved_prep = true)
 
     @test simspec(setup) == spec

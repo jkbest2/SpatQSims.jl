@@ -1,10 +1,10 @@
 @testset "Vessels & Fleets" begin
-    specs = [QDevScalingSpec(1, 0.1),
-             SharedQSpec(2, 0.4),
-             PrefIntensitySpec(3, 4),
-             DensityDependentQSpec(4, 1.0),
-             HabQSpec(5, 2.0),
-             BycatchSpec(6, 0.6)]
+    specs = [QDevScalingSpec(11, 0.1),
+             SharedQSpec(12, 0.4),
+             PrefIntensitySpec(13, 4),
+             DensityDependentQSpec(14, 1.0),
+             HabQSpec(15, 2.0),
+             BycatchSpec(16, 0.6)]
     preps = SpatQSimPrep.(specs)
     fleets = fleet.(preps)
 

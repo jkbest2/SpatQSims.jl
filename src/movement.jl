@@ -52,13 +52,16 @@ function MovementModel(hab::Habitat, spec::SpatQSimSpec)
     MovementModel(hab, pref, SIM_MOVERATE, dom)
 end
 
-
 # File operations ---------------------------------------------------------------
 function save(moveop::MovementModel, spec::SpatQSimSpec)
     make_repl_dir(spec)
     pfn = prep_file(spec)
     h5open(pfn, "cw") do h5
-        write_dataset(h5, "movement", moveop.M)
+        if !haskey(h5, "movement")
+            write_dataset(h5, "movement", moveop.M)
+        else
+            @warn "movement already saved in $pfn"
+        end
     end
     pfn
 end
@@ -69,4 +72,31 @@ function load_movement(spec::SpatQSimSpec)
         read_dataset(h5, "movement")
     end
     MovementModel(M, size(SIM_DOMAIN))
+end
+
+# Steady-state population -------------------------------------------------------
+function init_pop(mov::MovementModel, K = SIM_K)
+    eqdist(mov, K)
+end
+
+# Steady-state population save and load -----------------------------------------
+function save(init_pop::PopState, spec::SpatQSimSpec)
+    make_repl_dir(spec)
+    pfn = prep_path(spec)
+    h5open(pfn, "cw") do h5
+        if !haskey(h5, "init_pop")
+            write_dataset(h5, "init_pop", init_pop.P)
+        else
+            @warn "init_pop already in $pfn"
+        end
+    end
+    pfn
+end
+
+function load_init_pop(spec::SpatQSimSpec)
+    pfn = prep_file(spec)
+    p0 = h5open(pfn, "r") do h5
+        read_dataset(h5, "init_pop")
+    end
+    PopState(p0)
 end

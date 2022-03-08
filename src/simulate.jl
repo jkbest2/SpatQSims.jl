@@ -29,10 +29,18 @@ function result_saved(spec::SpatQSimSpec; csv = false, feather = true)
 end
 
 function run_sims(specs::Array{<:SpatQSimSpec};
-                  load_saved_prep = true,
                   checkpoint = true,
                   csv = false,
                   feather = true)
+    for spec in specs
+        if isfile(prep_path(spec))
+            continue
+        else
+            prep = SpatQSimPrep(spec)
+            save(prep)
+        end
+    end
+
     for spec in specs
         files = file_paths(spec)
         # If checkpointing, skip the rest of the inner for loop body if the
@@ -49,13 +57,11 @@ end
 
 function run_sims(simtype::Type{<:SpatQSimSpec},
                   repls::AbstractArray{<:Integer};
-                  load_saved_prep = true,
                   checkpoint = true,
                   csv = false,
                   feather = true)
     specs = simtype.(repls, (sim_values(simtype))')
     run_sims(specs;
-             load_saved_prep = load_saved_prep,
              checkpoint = checkpoint,
              csv = csv,
              feather = feather)

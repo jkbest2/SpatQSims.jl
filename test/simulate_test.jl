@@ -16,15 +16,16 @@
              HabQSpec(5, 2.0),
              BycatchSpec(6, 0.6)]
     results = run_sims(specs;
-                       load_saved_prep = false,
                        checkpoint = true,
                        csv = csv,
                        feather = feather)
 
+    @test isfile(prep_path(spec))
     @test !result_saved(PrefIntensitySpec(100, 4))
     @test result_saved(spec; csv = csv, feather = feather)
 
     for spec in specs
+        @test isfile(prep_path(spec))
         @test result_saved(spec; csv = csv, feather = feather)
     end
 

@@ -1,13 +1,19 @@
 @testset "Movement" begin
-    spec = HabQSpec(25, 2.0)
-    make_repl_dir(spec)
-    hab = load_habitat(spec)
+    specs = [QDevScalingSpec(11, 0.1),
+             SharedQSpec(12, 0.4),
+             PrefIntensitySpec(13, 4),
+             DensityDependentQSpec(4, 1.0),
+             HabQSpec(15, 2.0),
+             BycatchSpec(16, 0.6)]
+    habs = load_habitat.(specs)
 
-    mov = MovementModel(hab, spec)
+    movs = MovementModel.(habs, specs)
+    p0s = init_pop.(movs)
 
-    save(mov, spec)
-    mov2 = load_movement(spec)
+    save.(movs, specs)
+    save.(p0s, specs)
+    mov2 = load_movement(specs[3])
 
-    @test size(mov.M) == (10_000, 10_000)
-    @test mov.M == mov2.M
+    @test size(movs[3].M) == (10_000, 10_000)
+    @test movs[3].M == mov2.M
 end

@@ -6,7 +6,7 @@
              HabQSpec(5, 2.0),
              BycatchSpec(6, 0.6)]
     svals = [0.1, 0.4, 4, 1.0, 2.0, 0.6]
- pfns = ["qdevscaling/repl_01/qdevscale_prep.h5",
+    pfns = ["qdevscaling/repl_01/qdevscale_prep.h5",
             "sharedq/repl_02/sharedq_prep.h5",
             "prefintensity/repl_03/prefintensity_prep.h5",
             "densdepq/repl_04/densdepq_prep.h5",

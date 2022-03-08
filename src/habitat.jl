@@ -70,11 +70,16 @@ function save(hab::Habitat, spec::SpatQSimSpec)
     hns = habnames(habspec)
 
     make_repl_dir(spec)
-    h5open(prep_file(spec), "cw") do h5
+    pfn = prep_file(spec)
+    h5open(pfn, "cw") do h5
         for idx in 1:length(hab)
-            h = hab[idx]
-            h2 = hab_presave(h)
-            write_dataset(h5, hns[idx], h2)
+            if !haskey(h5, hns[idx])
+                h = hab[idx]
+                h2 = hab_presave(h)
+                write_dataset(h5, hns[idx], h2)
+            else
+                @warn "$hns[idx] already saved in $pfn"
+            end
         end
     end
     prep_file(spec)

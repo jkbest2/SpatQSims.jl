@@ -17,6 +17,8 @@ simspec(result::SpatQSimResult) = result.spec
 realization(result::SpatQSimResult) = realization(simspec(result))
 
 function save(result::SpatQSimResult; csv = false, feather = true)
+    make_repl_dir(simspec(result))
+
     files = file_paths(simspec(result))
     save_pop_hdf5(result, files[:pop_h5])
     if (csv)

@@ -17,12 +17,17 @@ struct SpatQSimPrep{S, H, M, P}
 end
 
 function SpatQSimPrep(spec::SpatQSimSpec)
-    habspec = HabitatSpec(spec)
-    habitat = rand(habspec)
-    movement = MovementModel(habitat, spec)
-    init_pop = eqdist(movement, SIM_K)
+    if isfile(prep_path(spec))
+        prep = load_prep(spec)
+    else
+        habspec = HabitatSpec(spec)
+        habitat = rand(habspec)
+        movement = MovementModel(habitat, spec)
+        init_pop = eqdist(movement, SIM_K)
 
-    SpatQSimPrep(spec, habitat, movement, init_pop)
+        prep = SpatQSimPrep(spec, habitat, movement, init_pop)
+    end
+    prep
 end
 
 # Accessors ---------------------------------------------------------------------
@@ -34,25 +39,25 @@ domain(prep::SpatQSimPrep) = domain(simspec(prep))
 pop_dynamics(prep::SpatQSimPrep) = pop_dynamics(simspec(prep))
 
 # File operations ---------------------------------------------------------------
-function save(prep::SpatQSimPrep)
-    save(prep.habitat, prep.spec)
-    save(prep.movement, prep.spec)
-
+function save(prep::SpatQSimPrep; overwrite = false)
     pfn = prep_file(prep.spec)
-    h5open(pfn, "cw") do h5
-        write_dataset(h5, "init_pop", prep.init_pop.P)
+    if overwrite
+        remove_prep(spec; actually_delete = true)
     end
+
+    make_repl_dir(simspec(prep))
+
+    save(habitat(prep), simspec(prep))
+    save(movement(prep), simspec(prep))
+    save(init_pop(prep), simspec(prep))
+
     pfn
 end
 
 function load_prep(spec::SpatQSimSpec)
     habitat = load_habitat(spec)
     movement = load_movement(spec)
-
-    pfn = prep_file(spec)
-    init_pop = h5open(pfn, "r") do h5
-        PopState(read_dataset(h5, "init_pop"))
-    end
+    init_pop = load_init_pop(spec)
 
     SpatQSimPrep(spec, habitat, movement, init_pop)
 end
@@ -66,4 +71,13 @@ function prep_sims(simtype::Type{<:SpatQSimSpec}, n; base_dir = ".")
         push!(pfns, save(prep))
     end
     pfns
+end
+
+# Delete saved prep -------------------------------------------------------------
+function remove_prep(spec::SpatQSimSpec; actually_delete = false)
+    pfn = prep_path(spec)
+    if actually_delete && isfile(pfn)
+        rm(pfn)
+    end
+    pfn
 end

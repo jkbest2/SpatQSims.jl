@@ -44,6 +44,7 @@ function SpatQSimSetup(spec::SpatQSimSpec; load_saved_prep = false)
         prep = load_prep(spec)
     else
         prep = SpatQSimPrep(spec)
+        save(prep)
     end
     
     SpatQSimSetup(prep)
