@@ -78,7 +78,9 @@ export
     movement,
     init_pop,
     save,
-    load_prep
+    load_prep,
+    prep_sims,
+    remove_prep
 
 include("fleet.jl")
 export
