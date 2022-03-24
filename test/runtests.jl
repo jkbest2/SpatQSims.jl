@@ -1,5 +1,6 @@
 using SpatQSims
 using FisherySim
+using HDF5
 using Test
 
 @testset "SpatQSims.jl" begin
@@ -12,15 +13,5 @@ using Test
         include("fleet_test.jl")
         include("setup_test.jl")
         include("simulate_test.jl")
-
-        # prep_sims(1, "prep.h5")
-        # @test "prep.h5" in readdir()
-
-        # include("qdevscaling_test.jl")
-        # include("sharedq_test.jl")
-        # include("prefintensity_test.jl")
-        # include("densdepq_test.jl")
-        # include("habq_test.jl")
-        # include("bycatch_test.jl")
     end
 end

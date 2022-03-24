@@ -54,10 +54,34 @@ function save(prep::SpatQSimPrep; overwrite = false)
     pfn
 end
 
+function save(prep::SpatQSimPrep{<:HabQSpec}; overwrite = false)
+    pfn = prep_file(prep.spec)
+    if overwrite
+        remove_prep(spec; actually_delete = true)
+    end
+
+    make_repl_dir(simspec(prep))
+
+    save(habitat(prep), simspec(prep))
+
+    pfn
+end
+
+
 function load_prep(spec::SpatQSimSpec)
     habitat = load_habitat(spec)
     movement = load_movement(spec)
     init_pop = load_init_pop(spec)
+
+    SpatQSimPrep(spec, habitat, movement, init_pop)
+end
+
+# Special-case HabQSpec to allow movement to vary among sim values; need to
+# recalculate movement operator and initial population each time.
+function load_prep(spec::HabQSpec)
+    habitat = load_habitat(spec)
+    movement = MovementModel(habitat, spec)
+    init_pop = eqdist(movement, SIM_K)
 
     SpatQSimPrep(spec, habitat, movement, init_pop)
 end
