@@ -87,6 +87,6 @@ end
 #     make_repl_dir(typeof(spec), realization(spec); base_dir = base_dir)
 # end
 function make_repl_dir(spec::SpatQSimSpec)
-    pp = normpath(dirname(prep_path(spec)))
+    pp = normpath(dirname(prep_file(spec)))
     mkpath(pp)
 end

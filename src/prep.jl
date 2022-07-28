@@ -37,7 +37,7 @@ pop_dynamics(prep::SpatQSimPrep) = pop_dynamics(simspec(prep))
 
 # File operations ---------------------------------------------------------------
 function save(prep::SpatQSimPrep; overwrite=false)
-    pfn = prep_file(prep.spec)
+    pfn = prep_file(simspec(prep))
     make_repl_dir(simspec(prep))
 
     if overwrite
