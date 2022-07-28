@@ -52,6 +52,7 @@ simstudy_dir(::Type{<:PrefIntensitySpec}) = "prefintensity"
 simstudy_dir(::Type{<:DensityDependentQSpec}) = "densdepq"
 simstudy_dir(::Type{<:HabQSpec}) = "habq"
 simstudy_dir(::Type{<:BycatchSpec}) = "bycatch"
+simstudy_dir(::Type{<:MoveRateSpec}) = "moverate"
 
 """
 Return the file prefix for the simulation study.
@@ -63,6 +64,7 @@ simstudy_prefix(::Type{<:PrefIntensitySpec}) = "prefintensity_"
 simstudy_prefix(::Type{<:DensityDependentQSpec}) = "densdepq_"
 simstudy_prefix(::Type{<:HabQSpec}) = "habq_"
 simstudy_prefix(::Type{<:BycatchSpec}) = "bycatch_"
+simstudy_prefix(::Type{<:MoveRateSpec}) = "moverate_"
 
 function prep_path(simtype::Type{<:SpatQSimSpec}, repl::Integer; base_dir = ".")
     normpath(base_dir,

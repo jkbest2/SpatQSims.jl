@@ -4,7 +4,8 @@
              PrefIntensitySpec(13, 4),
              DensityDependentQSpec(4, 1.0),
              HabQSpec(15, 2.0),
-             BycatchSpec(16, 0.6)]
+             BycatchSpec(16, 0.6),
+             MoveRateSpec(17, 100.0)]
     make_repl_dir.(specs)
     habspecs = HabitatSpec.(specs)
     habs = rand.(habspecs)

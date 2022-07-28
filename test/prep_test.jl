@@ -19,14 +19,31 @@
     habq_prep2 = load_prep(habq_spec)
 
     h5open(prep_path(habq_spec), "r") do h5
-        dsets = keys(h5)
-        @test "rocky_habitat" ∈ dsets
-        @test "movement" ∉ dsets
-        @test "init_pop" ∉ dsets
+        @test haskey(h5, "rocky_habitat")
+        @test haskey(h5, "movement")
+        @test haskey(h5, "init_pop")
     end
+
     @test simspec(habq_prep) == simspec(habq_prep2)
     @test habitat(habq_prep).habs == habitat(habq_prep2).habs
     @test movement(habq_prep).M == movement(habq_prep2).M
     # Skip test; doesn't pass because init_pop is approximate
     # @test init_pop(habq_prep).P == init_pop(habq_prep2).P
+
+    # Generate totally fresh MoveRate prep
+    specmr = MoveRateSpec(27, sim_values(MoveRateSpec)[1])
+    prepmr = SpatQSimPrep(specmr)
+    save(prepmr)
+    # Check subsequent for same habitat, different movement
+    for mr in sim_values(MoveRateSpec)[2:end]
+        specmr2 = MoveRateSpec(27, mr)
+        prepmr2 = SpatQSimPrep(specmr2)
+        @test habitat(prepmr).habs == habitat(prepmr2).habs
+        save(prepmr2)
+
+        prepmr3 = load_prep(specmr2)
+        @test habitat(prepmr3).habs == habitat(prepmr).habs
+        @test movement(prepmr3).M == movement(prepmr2).M
+        @test movement(prepmr3).M != movement(prepmr).M
+    end
 end

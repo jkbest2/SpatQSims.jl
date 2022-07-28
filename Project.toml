@@ -1,7 +1,7 @@
 name = "SpatQSims"
 uuid = "baf29d45-b477-4558-8186-4051bce8e0df"
 authors = ["John K Best"]
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 Arrow = "69666777-d1a9-59fb-9406-91d4454c9d45"

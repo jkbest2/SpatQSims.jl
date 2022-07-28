@@ -143,3 +143,25 @@ function BycatchSpec(realization::Integer,
 end
 
 sim_value(spec::BycatchSpec) = spec.rocky_q
+
+# Vary movement rate avoidance -------------------------------------------------------------
+struct MoveRateSpec{T} <: SpatQSimSpec
+    realization::Int
+    move_dist::T
+    prep_file::String
+
+    function MoveRateSpec(realization::Int,
+                          move_dist::T,
+                          prep_file::String) where T<:Real
+        move_dist in sim_values(MoveRateSpec) || error("Invalid move_dist value")
+        new{T}(realization, move_dist, prep_file)
+    end
+end
+function MoveRateSpec(realization::Integer,
+                      move_dist::T;
+                      base_dir = ".") where T<:Real
+    prep_fn = prep_path(MoveRateSpec, realization; base_dir = base_dir)
+    MoveRateSpec(realization, move_dist, prep_fn)
+end
+
+sim_value(spec::MoveRateSpec) = spec.move_dist

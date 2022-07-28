@@ -4,10 +4,11 @@
              PrefIntensitySpec(13, 4),
              DensityDependentQSpec(14, 1.0),
              HabQSpec(15, 2.0),
-             BycatchSpec(16, 0.6)]
+             BycatchSpec(16, 0.6),
+             MoveRateSpec(17, 100.0)]
     preps = SpatQSimPrep.(specs)
     fleets = fleet.(preps)
 
     # Not sure what to test here, but at least I'll know everything runs
-    @test length(fleets) == 6
+    @test length(fleets) == length(specs)
 end

@@ -1,5 +1,5 @@
 # Constructors ------------------------------------------------------------------
-struct SpatQSimPrep{S, H, M, P}
+struct SpatQSimPrep{S,H,M,P}
     spec::S
     habitat::H
     movement::M
@@ -8,11 +8,8 @@ struct SpatQSimPrep{S, H, M, P}
     function SpatQSimPrep(spec::S,
                           habitat::H,
                           movement::M,
-                          init_pop::P) where {S<:SpatQSimSpec,
-                                              H<:Habitat,
-                                              M<:MovementModel,
-                                              P<:PopState}
-        new{S, H, M, P}(spec, habitat, movement, init_pop)
+                          init_pop::P) where {S <: SpatQSimSpec,H <: Habitat,M <: MovementModel,P <: PopState}
+        new{S,H,M,P}(spec, habitat, movement, init_pop)
     end
 end
 
@@ -30,7 +27,7 @@ function SpatQSimPrep(spec::SpatQSimSpec)
     prep
 end
 
-# Accessors ---------------------------------------------------------------------
+# Accessor function -------------------------------------------------------------
 simspec(prep::SpatQSimPrep) = prep.spec
 habitat(prep::SpatQSimPrep) = prep.habitat
 movement(prep::SpatQSimPrep) = prep.movement
@@ -39,34 +36,34 @@ domain(prep::SpatQSimPrep) = domain(simspec(prep))
 pop_dynamics(prep::SpatQSimPrep) = pop_dynamics(simspec(prep))
 
 # File operations ---------------------------------------------------------------
-function save(prep::SpatQSimPrep; overwrite = false)
+function save(prep::SpatQSimPrep; overwrite=false)
     pfn = prep_file(prep.spec)
-    if overwrite
-        remove_prep(spec; actually_delete = true)
-    end
-
     make_repl_dir(simspec(prep))
 
-    save(habitat(prep), simspec(prep))
-    save(movement(prep), simspec(prep))
-    save(init_pop(prep), simspec(prep))
-
-    pfn
-end
-
-function save(prep::SpatQSimPrep{<:HabQSpec}; overwrite = false)
-    pfn = prep_file(prep.spec)
     if overwrite
-        remove_prep(spec; actually_delete = true)
+        remove_prep(spec; actually_delete=true)
     end
 
-    make_repl_dir(simspec(prep))
-
-    save(habitat(prep), simspec(prep))
-
+    if isfile(pfn)
+        h5open(pfn, "cw") do h5
+            if !all(haskey.(Ref(h5), habnames(HabitatSpec(prep.spec))))
+                save(habitat(prep), simspec(prep))
+            end
+            if !haskey(h5, "movement")
+                save(movement(prep), simspec(prep))
+            end
+            if !haskey(h5, "init_pop")
+                save(init_pop(prep), simspec(prep))
+            end
+        end
+    else
+        # If new or being overwritten
+        save(habitat(prep), simspec(prep))
+        save(movement(prep), simspec(prep))
+        save(init_pop(prep), simspec(prep))
+    end
     pfn
 end
-
 
 function load_prep(spec::SpatQSimSpec)
     habitat = load_habitat(spec)
@@ -76,9 +73,9 @@ function load_prep(spec::SpatQSimSpec)
     SpatQSimPrep(spec, habitat, movement, init_pop)
 end
 
-# Special-case HabQSpec to allow movement to vary among sim values; need to
-# recalculate movement operator and initial population each time.
-function load_prep(spec::HabQSpec)
+# Special-case HabQSpec and MoveRate to allow movement to vary among sim values;
+# need to recalculate movement operator and initial population each time.
+function load_prep(spec::S) where S <: Union{HabQSpec,MoveRateSpec}
     habitat = load_habitat(spec)
     movement = MovementModel(habitat, spec)
     init_pop = eqdist(movement, SIM_K)
@@ -87,10 +84,10 @@ function load_prep(spec::HabQSpec)
 end
 
 # Prepare multiple realizations -------------------------------------------------
-function prep_sims(simtype::Type{<:SpatQSimSpec}, n; base_dir = ".")
+function prep_sims(simtype::Type{<:SpatQSimSpec}, n; base_dir=".")
     pfns = String[]
     for rlz in 1:n
-        spec = simtype(rlz, sim_values(simtype)[1]; base_dir = base_dir)
+        spec = simtype(rlz, sim_values(simtype)[1]; base_dir=base_dir)
         prep = SpatQSimPrep(spec)
         push!(pfns, save(prep))
     end
@@ -98,7 +95,7 @@ function prep_sims(simtype::Type{<:SpatQSimSpec}, n; base_dir = ".")
 end
 
 # Delete saved prep -------------------------------------------------------------
-function remove_prep(spec::SpatQSimSpec; actually_delete = false)
+function remove_prep(spec::SpatQSimSpec; actually_delete=false)
     pfn = prep_path(spec)
     if actually_delete && isfile(pfn)
         rm(pfn)

@@ -33,7 +33,8 @@ export
     PrefIntensitySpec,
     DensityDependentQSpec,
     HabQSpec,
-    BycatchSpec
+    BycatchSpec,
+    MoveRateSpec
 
 include("files.jl")
 export
